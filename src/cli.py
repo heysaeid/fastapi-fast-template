@@ -34,8 +34,19 @@ class Action:
     def create_files(files: List[str], check_exists_file: bool = True) -> None:
         pass
     
-    def init() -> None:
-        pass
+    @classmethod
+    def init(cls) -> None:
+        dirs = (
+            "./logs",
+            "./tests",
+            "./src",
+            "./src/controllers",
+            "./src/repositories",
+            "./src/services",
+            "./src/models",
+            "./src/schemas",
+        )
+        cls.create_dirs(dirs)
     
     
 class Cli:
