@@ -11,3 +11,9 @@ class Action:
     
     def init() -> None:
         pass
+    
+    
+class Cli:
+    
+    def main() -> None:
+        pass
