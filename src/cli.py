@@ -51,6 +51,7 @@ class Action:
         """
         files_with_action = {
             "./.gitignore": BaseContent.get_gitignore,
+            ".env.sample": BaseContent.get_env_sample,
             "src/config.py": BaseContent.get_config,
             "src/app.py": BaseContent.get_app,
             "src/main.py": BaseContent.get_main,
@@ -85,6 +86,8 @@ class Action:
         )
         files = (
             "./.gitignore",
+            "./.env.sample"
+            "./.env",
             "src/config.py",
             "src/app.py",
             "src/main.py",
