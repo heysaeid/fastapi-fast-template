@@ -79,3 +79,15 @@ from config import settings
 def create_app() -> FastAPI:
     app = FastAPI(debug=settings.debug, title=settings.project_name, description=settings.description)
     return app"""
+    
+    
+    def get_main() -> str:
+        return """import uvicorn
+from app import create_app
+
+
+app = create_app()
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True, env_file=".env")"""
