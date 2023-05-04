@@ -51,6 +51,7 @@ class Action:
         """
         files_with_action = {
             "./.gitignore": BaseContent.get_gitignore,
+            "src/config.py": BaseContent.get_config
         }
         created_files = []
         for file in files:
@@ -59,6 +60,8 @@ class Action:
                     file_action = files_with_action.get(file)
                     if file_action:
                         f.write(file_action())
+                    else:
+                        f.write("")
                 created_files.append(file)
             else:
                 print(f"{file} already exists")
@@ -78,7 +81,12 @@ class Action:
             "./src/models",
             "./src/schemas",
         )
+        files = (
+            "./.gitignore",
+            "src/config.py",
+        )
         cls.create_dirs(dirs)
+        cls.create_files(files)
     
     
 class Cli:
