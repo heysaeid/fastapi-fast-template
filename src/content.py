@@ -70,3 +70,12 @@ def get_settings():
     
 
 settings = get_settings()"""
+
+    def get_app() -> str:
+        return """from fastapi import FastAPI
+from config import settings
+
+
+def create_app() -> FastAPI:
+    app = FastAPI(debug=settings.debug, title=settings.project_name, description=settings.description)
+    return app"""

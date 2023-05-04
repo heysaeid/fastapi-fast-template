@@ -51,7 +51,8 @@ class Action:
         """
         files_with_action = {
             "./.gitignore": BaseContent.get_gitignore,
-            "src/config.py": BaseContent.get_config
+            "src/config.py": BaseContent.get_config,
+            "src/app.py": BaseContent.get_app,
         }
         created_files = []
         for file in files:
@@ -84,6 +85,7 @@ class Action:
         files = (
             "./.gitignore",
             "src/config.py",
+            "src/app.py",
         )
         cls.create_dirs(dirs)
         cls.create_files(files)
