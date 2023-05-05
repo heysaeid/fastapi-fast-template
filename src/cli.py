@@ -1,10 +1,13 @@
 import os
+import sys
 from typing import List
+import argparse
 from content import BaseContent
 
 
 class Action:
     
+    @staticmethod
     def create_dirs(directories: List[str]) -> None:
         """
         Create directories if they don't exist.
@@ -32,6 +35,7 @@ class Action:
         if created_dirs:
             print(f"The following directories were successfully created: {', '.join(created_dirs)}")
     
+    @staticmethod
     def create_files(files: List[str], exist_ok: bool = True) -> None:
         """
         Create files if they don't exist.
@@ -71,9 +75,8 @@ class Action:
         if created_files:
             print(f"The following files were successfully created: {', '.join(created_files)}")
 
-    
     @classmethod
-    def init(cls) -> None:
+    def init(cls, args) -> None:
         dirs = (
             "./logs",
             "./tests",
@@ -94,9 +97,24 @@ class Action:
         )
         cls.create_dirs(dirs)
         cls.create_files(files)
+        
+        action = sys.argv[-1]
+        if action == "init":
+            print("Initializing has been done successfully.")
     
     
 class Cli:
     
+    @staticmethod
     def main() -> None:
-        pass
+        parser = argparse.ArgumentParser(
+            prog='fastapi', 
+            description='FastAPI Fast Template CLI'
+        )
+        sub_parsers = parser.add_subparsers()
+        
+        init = sub_parsers.add_parser('init', help="Initialize your project.")
+        init.set_defaults(func=Action.init)
+        
+        args = parser.parse_args()
+        args.func(args)
