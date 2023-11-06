@@ -21,8 +21,15 @@ class EnumMixin:
 class ConfigTypeEnum(EnumMixin, StrEnum):
     MULTIPLE = "multiple"
     SINGLE =  "simple"
+    
+    
+class DatabaseTypeEnum(EnumMixin, StrEnum):
+    SQLALCHEMY = "sqlalchemy"
+    TORTOISE = "tortoise"
+    MONGODB = "mongodb"
 
 
 class ArgumentDefaultValueEnum(StrEnum):
     APP_NAME = "Fast Template"
     CONFIG_TYPE = ConfigTypeEnum.MULTIPLE
+    DATABASE_TYPE = DatabaseTypeEnum.SQLALCHEMY

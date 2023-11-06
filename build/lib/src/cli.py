@@ -1,14 +1,9 @@
 import os
 import sys
 import argparse
-from src.content import (
-    get_app, 
-    get_config, 
-    get_env_sample, 
-    get_gitignore, 
-    get_main,
-)
-from src.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum
+from src.content import Content
+from src.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum, DatabaseTypeEnum
+
 
 
 class Action:
@@ -42,7 +37,12 @@ class Action:
             print(f"The following directories were successfully created: {', '.join(created_dirs)}")
     
     @staticmethod
-    def create_files(files: list[str], exist_ok: bool = True) -> None:
+    def create_files(
+        config_type: ConfigTypeEnum,
+        database_type: DatabaseTypeEnum,
+        files: list[str], 
+        exist_ok: bool = True,
+    ) -> None:
         """
         Create files if they don't exist.
 
@@ -59,12 +59,15 @@ class Action:
             The following files were successfully created: ./src/config.py, ./src/main.py, ./.gitignore
 
         """
+        
+        content = Content(config_type, database_type)
         files_with_action = {
-            "./.gitignore": get_gitignore,
-            ".env.sample": get_env_sample,
-            "src/config.py": get_config,
-            "src/app.py": get_app,
-            "src/main.py": get_main,
+            "./.gitignore": content.get_gitignore,
+            ".env.sample": content.get_env_sample,
+            "src/config.py": content.get_config,
+            "src/app.py": content.get_app,
+            "src/main.py": content.get_main,
+            "src/database.py": content.get_database,
         }
         created_files = []
         for file in files:
@@ -98,12 +101,20 @@ class Action:
             {"file": ".gitignore"},
             {"file": ".env.sample"},
             {"file": ".env"},
-            {"file": "src/config.py", "type": args.config_type, "app_name": args.app_name},
+            {
+                "file": "src/config.py", 
+                "app_name": args.app_name,
+            },
             {"file": "src/app.py"},
             {"file": "src/main.py"},
+            {"file": "src/database.py"},
         )
-        cls.create_dirs(dirs)
-        cls.create_files(files)
+        cls.create_dirs(directories = dirs)
+        cls.create_files(
+            files = files, 
+            config_type = args.config_type,
+            database_type = args.database_type,
+        )
         
         action = sys.argv[-1]
         if action == "init":
@@ -134,6 +145,13 @@ class Cli:
             choices = ConfigTypeEnum.get_values(),
             help="Type config module",
         )
+        init.add_argument(
+            "-dbt", 
+            "--database_type", 
+            default = ArgumentDefaultValueEnum.DATABASE_TYPE,
+            choices = DatabaseTypeEnum.get_values(),
+            help="Database Type",
+        )
         init.set_defaults(func=Action.init)
         args = parser.parse_args()
 
@@ -145,6 +163,11 @@ class Cli:
             default_value = args.config_type.value,
             message = f"Enter the config module type (default: {ArgumentDefaultValueEnum.CONFIG_TYPE}): ",
             choices = ConfigTypeEnum.get_values(),
+        )
+        args.database_type = cls.get_input(
+            default_value = args.database_type.value,
+            message = f"Enter the database type (default: {ArgumentDefaultValueEnum.DATABASE_TYPE}): ",
+            choices = DatabaseTypeEnum.get_values(),
         )
         
         args.func(args)

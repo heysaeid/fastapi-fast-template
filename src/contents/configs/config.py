@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     app_port: int = 8000
     debug: bool = True
     description: str = ""
+    {db_config}
 
 
 class DevSettings(Settings):
