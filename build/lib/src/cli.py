@@ -1,4 +1,3 @@
-from email import message
 import os
 import sys
 import argparse
@@ -10,7 +9,6 @@ from src.content import (
     get_main,
 )
 from src.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum
-
 
 
 class Action:

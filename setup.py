@@ -2,11 +2,11 @@ from setuptools import setup
 
 
 setup(
-    name="FastAPI Fast Template",
+    name="fastapi fast template",
     install_requires=[
-        "fastapi==0.95.1",
-        "uvicorn==0.21.1",
-        "pydantic==1.10.7",
-        "python-dotenv==1.0.0",
+        "fastapi",
+        "uvicorn",
+        "pydantic",
+        "python-dotenv",
     ]
 )
