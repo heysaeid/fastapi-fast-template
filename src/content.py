@@ -64,3 +64,13 @@ class Content:
         return self.get_file_content(
             config_types[self.database_type],
         )
+        
+    def get_fast_template_ini(self) -> str:
+        return """
+[app]
+config_type = {config_type}
+database_type = {database_type}
+    """.format(
+        config_type = self.config_type, 
+        database_type = self.database_type,
+    )

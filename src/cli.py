@@ -1,6 +1,7 @@
 import os
 import sys
 import argparse
+from src.utils.helpers import get_app_config
 from src.content import Content
 from src.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum, DatabaseTypeEnum
 
@@ -98,6 +99,7 @@ class Action:
             "./src/schemas",
         )
         files = (
+            {"file": ".fast_template.ini"},
             {"file": ".gitignore"},
             {"file": ".env.sample"},
             {"file": ".env"},
@@ -116,6 +118,9 @@ class Action:
             database_type = args.database_type,
         )
         
+        config = get_app_config()
+        #print(config["app"], "logsssssss")
+        
         action = sys.argv[-1]
         if action == "init":
             print("Initializing has been done successfully.")
@@ -127,7 +132,7 @@ class Cli:
     def main(cls) -> None:
         parser = argparse.ArgumentParser(
             prog='fast', 
-            description='FastAPI Fast Template CLI'
+            description='FastAPI Fast Template CLI',
         )
         sub_parsers = parser.add_subparsers()
         

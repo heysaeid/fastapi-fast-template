@@ -8,5 +8,6 @@ setup(
         "uvicorn",
         "pydantic",
         "python-dotenv",
+        "pydantic-settings",
     ]
 )
