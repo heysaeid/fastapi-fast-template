@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create
 from sqlalchemy.engine import URL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker

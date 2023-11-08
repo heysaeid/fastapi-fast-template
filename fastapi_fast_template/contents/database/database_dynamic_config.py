@@ -1,4 +1,4 @@
-from src.utils.enums import DatabaseTypeEnum
+from fastapi_fast_template.utils.enums import DatabaseTypeEnum
 
 
 class DatabaseDynamicConfig:

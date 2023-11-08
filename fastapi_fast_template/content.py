@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-from src.contents.database.database_dynamic_config import DatabaseDynamicConfig
-from src.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
+from fastapi_fast_template.contents.database.database_dynamic_config import DatabaseDynamicConfig
+from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
 
 
 class Content:
@@ -19,7 +19,7 @@ class Content:
         file_path: str, 
         **kwargs
     ) -> str:
-        file = Path(os.path.abspath(f"../src/contents/{file_path}"))
+        file = Path(os.path.abspath(f"../fastapi_fast_template/contents/{file_path}"))
         file_content = file.read_text()
         
         content_data = {}

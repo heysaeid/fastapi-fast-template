@@ -1,9 +1,9 @@
 import os
 import sys
 import argparse
-from src.utils.helpers import get_app_config
-from src.content import Content
-from src.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum, DatabaseTypeEnum
+from fastapi_fast_template.utils.helpers import get_app_config
+from fastapi_fast_template.content import Content
+from fastapi_fast_template.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum, DatabaseTypeEnum
 
 
 
