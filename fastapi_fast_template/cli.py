@@ -1,7 +1,6 @@
 import os
 import sys
 import argparse
-from fastapi_fast_template.utils.helpers import get_app_config
 from fastapi_fast_template.content import Content
 from fastapi_fast_template.utils.enums import ArgumentDefaultValueEnum, ConfigTypeEnum, DatabaseTypeEnum
 
@@ -63,12 +62,14 @@ class Action:
         
         content = Content(config_type, database_type)
         files_with_action = {
+            "./.fast_template.ini": content.get_fast_template_ini,
             "./.gitignore": content.get_gitignore,
             ".env.sample": content.get_env_sample,
             "src/config.py": content.get_config,
             "src/app.py": content.get_app,
             "src/main.py": content.get_main,
             "src/database.py": content.get_database,
+            "src/repositories/base.py": content.get_repository
         }
         created_files = []
         for file in files:
@@ -110,6 +111,7 @@ class Action:
             {"file": "src/app.py"},
             {"file": "src/main.py"},
             {"file": "src/database.py"},
+            {"file": "src/repositories/base.py"},
         )
         cls.create_dirs(directories = dirs)
         cls.create_files(
@@ -117,10 +119,7 @@ class Action:
             config_type = args.config_type,
             database_type = args.database_type,
         )
-        
-        config = get_app_config()
-        #print(config["app"], "logsssssss")
-        
+
         action = sys.argv[-1]
         if action == "init":
             print("Initializing has been done successfully.")

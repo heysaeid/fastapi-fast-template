@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from fastapi_fast_template.contents.database.database_dynamic_config import DatabaseDynamicConfig
 from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
+from fastapi_fast_template.utils.helpers import get_app_config
 
 
 class Content:
@@ -13,13 +14,14 @@ class Content:
     ):
         self.config_type = config_type
         self.database_type = database_type 
+        self.app_config = get_app_config()
     
     def get_file_content(
         self, 
         file_path: str, 
         **kwargs
-    ) -> str:
-        file = Path(os.path.abspath(f"../fastapi_fast_template/contents/{file_path}"))
+    ) -> str:        
+        file = Path(f"{os.path.dirname(__file__)}/contents/{file_path}")
         file_content = file.read_text()
         
         content_data = {}
@@ -29,7 +31,20 @@ class Content:
             else:
                 content_data[key] = value
         
-        return file_content.format(**content_data)
+        if content_data:
+            return file_content.format(**content_data)
+        
+        return file_content
+
+            
+    def get_fast_template_ini(self) -> str:
+        return """
+[app]
+config_type = {config_type}
+database_type = {database_type}""".format(
+        config_type = self.config_type, 
+        database_type = self.database_type,
+    )
 
     def get_config(self, app_name: str) -> str:
         config_types = {
@@ -65,12 +80,10 @@ class Content:
             config_types[self.database_type],
         )
         
-    def get_fast_template_ini(self) -> str:
-        return """
-[app]
-config_type = {config_type}
-database_type = {database_type}
-    """.format(
-        config_type = self.config_type, 
-        database_type = self.database_type,
-    )
+    def get_repository(self) -> str:
+        repository = {
+            DatabaseTypeEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
+        }            
+        return self.get_file_content(
+            repository[self.database_type],
+        )
