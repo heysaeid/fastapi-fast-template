@@ -88,5 +88,8 @@ database_type = {database_type}""".format(
             repository[self.database_type],
         )
         
+    def get_lifespan(self):
+        return self.get_file_content("utils/lifespan.py")
+        
     def get_conftest(self):
         return self.get_file_content("tests/conftest.py")

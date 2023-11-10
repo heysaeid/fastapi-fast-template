@@ -72,6 +72,7 @@ class Action:
             "src/main.py": content.get_main,
             "src/database.py": content.get_database,
             "src/repositories/base.py": content.get_repository,
+            "src/utils/lifespan.py": content.get_lifespan,
             
             # tests
             "tests/conftest.py": content.get_conftest,
@@ -103,6 +104,7 @@ class Action:
             "./src/services",
             "./src/models",
             "./src/schemas",
+            "./src/utils",
         )
         files = (
             {"file": ".fast_template.ini"},
@@ -117,6 +119,7 @@ class Action:
             {"file": "src/main.py"},
             {"file": "src/database.py"},
             {"file": "src/repositories/base.py"},
+            {"file": "src/utils/lifespan.py"},
             {"file": "tests/conftest.py"},
         )
         cls.create_dirs(directories = dirs)
