@@ -65,11 +65,16 @@ class Action:
             "./.fast_template.ini": content.get_fast_template_ini,
             "./.gitignore": content.get_gitignore,
             ".env.sample": content.get_env_sample,
+            
+            # src
             "src/config.py": content.get_config,
             "src/app.py": content.get_app,
             "src/main.py": content.get_main,
             "src/database.py": content.get_database,
-            "src/repositories/base.py": content.get_repository
+            "src/repositories/base.py": content.get_repository,
+            
+            # tests
+            "tests/conftest.py": content.get_conftest,
         }
         created_files = []
         for file in files:
@@ -112,6 +117,7 @@ class Action:
             {"file": "src/main.py"},
             {"file": "src/database.py"},
             {"file": "src/repositories/base.py"},
+            {"file": "tests/conftest.py"},
         )
         cls.create_dirs(directories = dirs)
         cls.create_files(

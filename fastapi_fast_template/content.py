@@ -87,3 +87,6 @@ database_type = {database_type}""".format(
         return self.get_file_content(
             repository[self.database_type],
         )
+        
+    def get_conftest(self):
+        return self.get_file_content("tests/conftest.py")
