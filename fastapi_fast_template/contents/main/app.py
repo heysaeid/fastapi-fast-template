@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from config import settings
 from utils.lifespan import lifespan
+from routers import api_router
 
 
 def create_app() -> FastAPI:
@@ -10,4 +11,5 @@ def create_app() -> FastAPI:
         description = settings.description,
         lifespan=lifespan,
     )
+    app.include_router(api_router)
     return app

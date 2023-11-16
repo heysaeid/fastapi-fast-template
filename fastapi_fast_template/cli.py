@@ -72,6 +72,7 @@ class Action:
             "src/main.py": content.get_main,
             "src/database.py": content.get_database,
             "src/repositories/base.py": content.get_repository,
+            "src/routers/__init__.py": content.get_router_init,
             "src/utils/lifespan.py": content.get_lifespan,
             
             # tests
@@ -99,7 +100,7 @@ class Action:
             "./logs",
             "./tests",
             "./src",
-            "./src/controllers",
+            "./src/routers",
             "./src/repositories",
             "./src/services",
             "./src/models",
@@ -119,6 +120,7 @@ class Action:
             {"file": "src/main.py"},
             {"file": "src/database.py"},
             {"file": "src/repositories/base.py"},
+            {"file": "src/routers/__init__.py"},
             {"file": "src/utils/lifespan.py"},
             {"file": "tests/conftest.py"},
         )
