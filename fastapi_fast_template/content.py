@@ -88,7 +88,7 @@ class SrcContent(BaseContent):
     def get_repository(self) -> str:
         repository = {
             DatabaseTypeEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
-        }            
+        }
         return self.get_file_content(
             repository[self.database_type],
         )
@@ -100,3 +100,14 @@ class SrcContent(BaseContent):
         return self.get_file_content("routers/base.py")
     
     
+class ExtensionContent(BaseContent):
+    
+    def get_babel_cfg(self) -> str:
+        return "[python: **.py]"
+    
+    def get_babel_import_in_app(self) -> str:
+        return "from fastapi_and_babel import FastAPIAndBabel"
+    
+    def get_babel_in_app(self, lang: str) -> str:
+        return """
+    translator = FastAPIAndBabel(__file__, app, "{lang}")""".format(lang=lang)

@@ -1,5 +1,6 @@
 import sys
 import argparse
+from fastapi_fast_template.actions.extension import ExtensionAction, ExtensionActionParser
 from fastapi_fast_template.actions.main import InitAction, InitActionParser
 from fastapi_fast_template.content import RootContent, SrcContent
 from fastapi_fast_template.utils.enums import ActionEnum
@@ -13,6 +14,10 @@ class Cli:
             action_class=InitAction(), 
             sub_parsers=self.sub_parsers,
         )
+        self.extension_action_parser = ExtensionActionParser(
+            action_class=ExtensionAction(), 
+            sub_parsers=self.sub_parsers,
+        )
     
     @classmethod
     def main(cls) -> None:
@@ -23,13 +28,16 @@ class Cli:
         sub_parsers = parser.add_subparsers()
         instance = cls(sub_parsers)
         instance.init_action_parser.parser()
+        instance.extension_action_parser.parser()
         instance.__parse_args(parser)
         
     def __parse_args(self, parser: argparse.ArgumentParser) -> None:
         args = parser.parse_args()
 
-        action = sys.argv[-1]
+        action = sys.argv[1]
         if action == ActionEnum.init:
             self.init_action_parser.get_user_input(args)
+        elif action == ActionEnum.extension:
+            self.extension_action_parser.get_user_input(args)
         
         args.func(args)

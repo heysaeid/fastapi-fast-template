@@ -67,3 +67,8 @@ class FileEnum(StrEnum):
     
 class ActionEnum(StrEnum):
     init = "init"
+    extension = "extension"
+    
+    
+class ExtensionNameEnum(StrEnum):
+    babel = "babel"
