@@ -1,20 +1,17 @@
 import os
 from pathlib import Path
+from argparse import ArgumentParser
 from fastapi_fast_template.contents.database.database_dynamic_config import DatabaseDynamicConfig
 from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
 from fastapi_fast_template.utils.helpers import get_app_config
 
 
-class Content:
+class BaseContent:
     
-    def __init__(
-        self, 
-        config_type: ConfigTypeEnum,
-        database_type: DatabaseTypeEnum,
-    ):
-        self.config_type = config_type
-        self.database_type = database_type 
+    def __init__(self, args: ArgumentParser):
         self.app_config = get_app_config()
+        self.config_type = self.app_config["config_type"] if self.app_config else args.config_type
+        self.database_type = self.app_config["database_type"] if self.app_config else args.database_type
     
     def get_file_content(
         self, 
@@ -36,6 +33,8 @@ class Content:
         
         return file_content
 
+
+class RootContent(BaseContent):
             
     def get_fast_template_ini(self) -> str:
         return """
@@ -46,6 +45,21 @@ database_type = {database_type}""".format(
         database_type = self.database_type,
     )
 
+    def get_gitignore(self) -> str:
+        return self.get_file_content("git/.gitignore",)
+    
+    def get_env_sample(self) -> str:
+        return self.get_file_content(
+            "envs/.env.sample",
+            db_env = DatabaseDynamicConfig.get_db_env_sample(self.database_type),
+        )
+        
+    def get_conftest(self) -> str:
+        return self.get_file_content("tests/conftest.py")
+    
+    
+class SrcContent(BaseContent):
+    
     def get_config(self, app_name: str) -> str:
         config_types = {
             ConfigTypeEnum.MULTIPLE: "configs/config.py",
@@ -56,21 +70,12 @@ database_type = {database_type}""".format(
             app_name = app_name, 
             db_config = DatabaseDynamicConfig.get_db_config(self.database_type),
         )
-
-    def get_gitignore(self) -> str:
-        return self.get_file_content("git/.gitignore",)
-
+    
     def get_app(self) -> str:
         return self.get_file_content("main/app.py",)
 
     def get_main(self) -> str:
         return self.get_file_content("main/main.py",)
-        
-    def get_env_sample(self) -> str:
-        return self.get_file_content(
-            "envs/.env.sample",
-            db_env = DatabaseDynamicConfig.get_db_env_sample(self.database_type),
-        )
         
     def get_database(self) -> str:
         config_types = {
@@ -90,9 +95,8 @@ database_type = {database_type}""".format(
         
     def get_lifespan(self) -> str:
         return self.get_file_content("utils/lifespan.py")
-        
-    def get_conftest(self) -> str:
-        return self.get_file_content("tests/conftest.py")
     
     def get_router_init(self) -> str:
         return self.get_file_content("routers/base.py")
+    
+    
