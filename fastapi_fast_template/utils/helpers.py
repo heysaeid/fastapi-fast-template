@@ -27,15 +27,26 @@ def find_line_in_file(value, file_path):
                 return line_number, line.strip()
     return None
 
-def add_new_line(file_path, search_value, new_line):
+def add_new_line(
+    file_path: str, 
+    new_line: str, 
+    search_value: str = None,
+    remove_matched: bool = False,
+):
     with open(file_path, 'r') as file:
+        if remove_matched and search_value in file.read():
+            return
         lines = file.readlines()
 
-    with open(file_path, 'w') as file:
-        for line in lines:
-            if search_value in line:
-                file.write(new_line + '\n')
-            file.write(line)
+    if not remove_matched and search_value:
+        with open(file_path, 'w') as file:
+            for line in lines:
+                if search_value in line:
+                    file.write(new_line + '\n')
+                file.write(line)
+    else:
+        with open(file_path, 'a+') as file:
+            file.write(new_line + '\n')
 
 
 def add_line_to_last_import(file_path, new_line):

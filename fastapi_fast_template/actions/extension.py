@@ -1,9 +1,13 @@
-import sys, os
+import os
 from argparse import ArgumentParser
 from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
 from fastapi_fast_template.content import ExtensionContent
-from fastapi_fast_template.utils.enums import ExtensionNameEnum
-from fastapi_fast_template.utils.helpers import add_new_line, FileBuilder, add_line_to_last_import
+from fastapi_fast_template.utils.enums import ExtensionNameEnum, FileEnum
+from fastapi_fast_template.utils.helpers import (
+    add_new_line, 
+    add_line_to_last_import,
+    FileBuilder,
+)
 
 
 
@@ -25,11 +29,17 @@ class ExtensionAction(ActionABC):
             os.system(f"pybabel init -i messages.pot -d translations -l {args.lang}")
             
         os.system(f"pybabel compile -d translations")
-        add_line_to_last_import("src/app.py", ext_content.get_babel_import_in_app())
+        add_line_to_last_import(FileEnum.src_app, ext_content.get_babel_import_in_app())
         add_new_line(
-            file_path = "src/app.py", 
+            file_path = FileEnum.src_app, 
             search_value = "return app",
             new_line = ext_content.get_babel_in_app(lang = args.lang),
+        )
+        add_new_line(
+            file_path = FileEnum.fast_template_init, 
+            search_value = "babel",
+            remove_matched = True,
+            new_line = ext_content.get_babel_in_fast_template_init(),
         )
 
 class ExtensionActionParser(ActionParserABC):

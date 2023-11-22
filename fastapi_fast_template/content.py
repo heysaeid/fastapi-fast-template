@@ -111,3 +111,6 @@ class ExtensionContent(BaseContent):
     def get_babel_in_app(self, lang: str) -> str:
         return """
     translator = FastAPIAndBabel(__file__, app, "{lang}")""".format(lang=lang)
+    
+    def get_babel_in_fast_template_init(self) -> str:
+        return "babel=True"
