@@ -37,6 +37,6 @@ async def drop_and_create_all_tables():
     await drop_all_tables()
     await create_all_tables()
 
-async def get_session() -> AsyncGenerator[AsyncSession]:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
