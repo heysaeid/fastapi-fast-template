@@ -1,7 +1,8 @@
 from typing import Generic, TypeVar
-from database import Base
+from sqlalchemy import select, Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic.types import PositiveInt, UUID
+from database import Base
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -52,6 +53,7 @@ class BaseRepository(Generic[ModelType]):
         - rollback (bool): Flag indicating whether to rollback changes on exception (default: True).
 
         """
+        
         try:
             if commit:
                 self.before_commit()
@@ -124,6 +126,7 @@ class BaseRepository(Generic[ModelType]):
         - ModelType: The updated model instance.
 
         """
+        
         for attr, value in attributes.items():
             setattr(obj, attr, value)
 
@@ -139,12 +142,13 @@ class BaseRepository(Generic[ModelType]):
         - commit (bool): Flag indicating whether to commit changes (default: False).
 
         """
+        
         await self.session.delete(obj)
         await self.session.commit(commit)
     
-    async def get_by(self, field: str, value: any) -> ModelType | None:
+    async def get_by(self, field: str, value: any) -> list[ModelType] | None:
         """
-        Retrieves a single model instance from the database based on the specified field and value.
+        Retrieves a list of model instance from the database based on the specified field and value.
 
         Parameters:
         - field: The name of the field to filter on.
@@ -154,9 +158,11 @@ class BaseRepository(Generic[ModelType]):
         - ModelType or None: The retrieved model instance, or None if no matching instance is found.
 
         """
-        return await self.session.query(self.model_class).filter_by(
-            **{field: value}
-        ).one()
+        
+        query = self._select()
+        query = query.filter(getattr(self.model_class, field) == value)
+        query = await self.session.scalars(query)
+        return query.all()
     
     async def get_by_id(self, id: PositiveInt | UUID) -> ModelType | None:
         """
@@ -169,15 +175,16 @@ class BaseRepository(Generic[ModelType]):
         - ModelType or None: The retrieved model instance, or None if no matching instance is found.
 
         """
-        return await self.session.query(self.model_class).filter_by(
-            id = id
-        ).one()
+        query = self._select()
+        query = query.filter(self.model_class.id == id)
+        query = await self.session.scalars(query)
+        return query.one()
         
     async def get_all(
         self, 
         skip: PositiveInt = 0, 
         limit: PositiveInt = 100, 
-        **filters
+        **filters,
     ) -> list[ModelType]:
         """
         Retrieves a list of model instances from the database based on the specified filters, with optional pagination.
@@ -191,21 +198,29 @@ class BaseRepository(Generic[ModelType]):
         - list[ModelType]: A list of retrieved model instances.
 
         """
-        return await self.session.query(self.model_class).filter_by(
-            **filters
-        ).offset(skip).limit(limit)
+        
+        query = self._select()
+        query = query.filter_by(**filters).offset(skip).limit(limit)
+        query = await self.session.scalars(query)
+        return query.all()
     
-    async def count(self, **filters) -> PositiveInt:
+    async def one_or_none(self, field: str, value: any) -> ModelType | None:
         """
-        Counts the number of model instances in the database based on the specified filters.
+        Retrieves a single model instance from the database based on the specified field and value.
 
         Parameters:
-        - **filters: Keyword arguments representing the filters to apply.
+        - field: The name of the field to filter on.
+        - value: The value to filter the field by.
 
         Returns:
-        - PositiveInt: The count of matching model instances.
+        - ModelType or None: The retrieved model instance, or None if no matching instance is found.
 
         """
-        return await self.session.query(self.model_class).filter_by(
-            **filters
-        ).count()
+        
+        query = self._select()
+        query = query.filter(getattr(self.model_class, field) == value)
+        query = await self.session.scalars(query)
+        return query.one_or_none()
+    
+    def _select(self) -> Select:
+        return select(self.model_class)
