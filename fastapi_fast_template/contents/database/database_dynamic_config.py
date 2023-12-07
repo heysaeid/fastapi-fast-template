@@ -8,11 +8,11 @@ class DatabaseDynamicConfig:
     def get_db_config(cls, database_type: DatabaseTypeEnum) -> str | None:
         DBMS_CONTENT = """
     # Database Configs
-    db_drivername: str = "postgresql"
+    db_drivername: str = "postgresql+asyncpg"
     db_username: str = "postgres"
     db_password: str = "1234"
     db_host: str = "localhost"
-    db_database: str = "fast_db"
+    db_database: str = "fastdb"
     db_port: int = 5432"""
 
         if database_type in cls.DBMS_DATABASES:
