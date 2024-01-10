@@ -46,6 +46,7 @@ class DirectoryEnum(StrEnum):
     src_models = "./src/models"
     src_schemas = "./src/schemas"
     src_utils = "./src/utils"
+    src_tasks = "./src/tasks"
     
     
 class FileEnum(StrEnum):
@@ -63,6 +64,9 @@ class FileEnum(StrEnum):
     src_repo_base = "src/repositories/base.py"
     src_routers_init_ = "src/routers/__init__.py"
     src_utils_lifespan = "src/utils/lifespan.py"
+    src_tasks_init_ = "src/tasks/__init__.py"
+    
+    last_run_scheduler = '.last_run_scheduler.txt'
     
     
 class ActionEnum(StrEnum):
@@ -72,3 +76,4 @@ class ActionEnum(StrEnum):
     
 class ExtensionNameEnum(StrEnum):
     babel = "babel"
+    scheduler = "scheduler"

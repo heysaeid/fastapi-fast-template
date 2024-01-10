@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+import ast
 from configparser import ConfigParser
 
 
@@ -86,3 +86,51 @@ class FileBuilder:
             file=self.file, 
             file_content=self.build_function(**self.inputs) if self.build_function else "",
         )
+
+
+def add_text_to_obj_end(
+    file_path: str, 
+    text_to_add: str,
+    class_name: str = None,
+    function_name: str = None,
+    async_function_name: str = None,
+) -> None:
+    try:
+        # Read the module file
+        with open(file_path, "r") as file:
+            code = file.read()
+
+        # Parse the code
+        tree = ast.parse(code)
+
+        # Find the class definition
+        found = False
+        empty_expr = ast.Expr(ast.Name(id='', ctx=ast.Load()))
+        for node in tree.body:
+            # Add the desired text to the end of the class definition
+            if class_name and isinstance(node, ast.ClassDef) and node.name == class_name:
+                found = True
+                node.body.append(ast.parse(text_to_add).body[0])
+                node.body.append(empty_expr)
+                break
+            elif function_name and isinstance(node, ast.FunctionDef) and node.name == function_name:
+                found = True
+                node.body.append(ast.parse(text_to_add).body[0])
+                node.body.append(empty_expr)
+                break
+            elif async_function_name and isinstance(node, ast.AsyncFunctionDef) and node.name == async_function_name:
+                found = True
+                node.body.append(ast.parse(text_to_add).body[0])
+                node.body.append(empty_expr)
+                break
+
+        if found:
+            
+            # Rewrite the modified code back to the module file
+            with open(file_path, "w") as file:
+                file.write(ast.unparse(tree))
+            print(f"Text added to the end of class '{class_name}' in module '{file_path}'")
+        else:
+            print(f"Class '{class_name}' not found in module '{file_path}'")
+    except FileNotFoundError:
+        print(f"Module '{file_path}' not found")

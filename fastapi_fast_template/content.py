@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from argparse import ArgumentParser
 from fastapi_fast_template.contents.database.database_dynamic_config import DatabaseDynamicConfig
-from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
+from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum, FileEnum
 from fastapi_fast_template.utils.helpers import get_app_config
 
 
@@ -114,3 +114,21 @@ class ExtensionContent(BaseContent):
     
     def get_babel_in_fast_template_init(self) -> str:
         return "babel=True"
+    
+    def get_scheduler_in_fast_template_init(self) -> str:
+        return "scheduler=True"
+    
+    def get_scheduler_init(self):
+        return self.get_file_content("tasks/__init__.py")
+    
+    def get_scheduler_in_setting(self):
+        return "\nenable_scheduler: bool = False"
+    
+    def get_scheduler_in_lifespan_import(self):
+        return "from tasks import start_scheduler, shutdown_scheduler"
+    
+    def get_scheduler_in_lifespan_start_application(self):
+        return "start_scheduler()"
+    
+    def get_scheduler_in_lifespan_down_application(self):
+        return "shutdown_scheduler()"
