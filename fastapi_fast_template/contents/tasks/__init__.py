@@ -11,11 +11,11 @@ scheduler = AsyncIOScheduler()
 
 def start_scheduler():
     if settings.enable_scheduler:
+        create_file(FileEnum.last_run_scheduler)
         last_run = datetime.fromtimestamp(
             os.path.getmtime(FileEnum.last_run_scheduler)
         )
         if datetime.now() - last_run > timedelta(seconds=5):
-            create_file(FileEnum.last_run_scheduler)
             with open(FileEnum.last_run_scheduler, "w") as f:
                 f.write(str(datetime.now()))
 
