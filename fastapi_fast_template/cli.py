@@ -1,8 +1,8 @@
 import sys
 import argparse
-from fastapi_fast_template.actions.extension import ExtensionAction, ExtensionActionParser
 from fastapi_fast_template.actions.main import InitAction, InitActionParser
-from fastapi_fast_template.content import RootContent, SrcContent
+from fastapi_fast_template.actions.extension import ExtensionAction, ExtensionActionParser
+from fastapi_fast_template.actions.doc import DocAction, DocActionParser
 from fastapi_fast_template.utils.enums import ActionEnum
 
 
@@ -18,6 +18,11 @@ class Cli:
             action_class=ExtensionAction(), 
             sub_parsers=self.sub_parsers,
         )
+        self.doc_action_parser = DocActionParser(
+            action_class=DocAction(),
+            sub_parsers=self.sub_parsers,
+        )
+        
     
     @classmethod
     def main(cls) -> None:
@@ -29,6 +34,7 @@ class Cli:
         instance = cls(sub_parsers)
         instance.init_action_parser.parser()
         instance.extension_action_parser.parser()
+        instance.doc_action_parser.parser()
         instance.__parse_args(parser)
         
     def __parse_args(self, parser: argparse.ArgumentParser) -> None:
