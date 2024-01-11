@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from argparse import ArgumentParser
 from fastapi_fast_template.contents.database.database_dynamic_config import DatabaseDynamicConfig
-from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum, FileEnum
+from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
 from fastapi_fast_template.utils.helpers import get_app_config
 
 
@@ -10,8 +10,15 @@ class BaseContent:
     
     def __init__(self, args: ArgumentParser):
         self.app_config = get_app_config()
-        self.config_type = self.app_config["config_type"] if self.app_config else args.config_type
-        self.database_type = self.app_config["database_type"] if self.app_config else args.database_type
+        
+        if self.app_config:
+            self.config_type = self.app_config["config_type"]
+            self.database_type = self.app_config["database_type"]
+            self.scheduler = self.app_config.get("scheduler", "False") == "True"
+        else:
+            self.config_type = args.config_type
+            self.database_type = args.database_type
+            self.scheduler = False
     
     def get_file_content(
         self, 

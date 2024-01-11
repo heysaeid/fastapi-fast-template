@@ -12,6 +12,7 @@ from fastapi_fast_template.utils.helpers import (
     add_new_line, 
     add_line_to_last_import,
     add_text_to_obj_end,
+    check_extension_exists,
     create_directory,
 )
 
@@ -50,6 +51,10 @@ class ExtensionAction(ActionABC):
         )
         
     def scheduler(self, args: ArgumentParser) -> None:
+        if check_extension_exists(ExtensionNameEnum.scheduler):
+            print("You have already added the scheduler")
+            return 
+        
         ext_content = ExtensionContent(args)
         create_directory(DirectoryEnum.src_tasks)
         FileBuilder(file=FileEnum.src_tasks_init_, build_function=ext_content.get_scheduler_init).build()

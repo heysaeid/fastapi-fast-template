@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from argparse import _SubParsersAction, Namespace
-from fastapi_fast_template.content import BaseContent
 
 
 class ActionABC(ABC):
