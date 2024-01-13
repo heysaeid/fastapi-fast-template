@@ -24,6 +24,8 @@ class ExtensionAction(ActionABC):
             self.babel(args)
         elif args.name == ExtensionNameEnum.scheduler:
             self.scheduler(args)
+        elif args.name == ExtensionNameEnum.caching:
+            self.caching(args)
 
     def babel(self, args: ArgumentParser) -> None:
         ext_content = ExtensionContent(args)
@@ -53,7 +55,7 @@ class ExtensionAction(ActionABC):
     def scheduler(self, args: ArgumentParser) -> None:
         if check_extension_exists(ExtensionNameEnum.scheduler):
             print("You have already added the scheduler")
-            return 
+            return
         
         ext_content = ExtensionContent(args)
         create_directory(DirectoryEnum.src_tasks)
@@ -83,6 +85,43 @@ class ExtensionAction(ActionABC):
             async_function_name = "down_application",
             text_to_add = ext_content.get_scheduler_in_lifespan_down_application(),
         )
+        
+    def caching(self, args: ArgumentParser) -> None:
+        if check_extension_exists(ExtensionNameEnum.caching):
+            print("You have already added the caching")
+            return
+        
+        ext_content = ExtensionContent(args)
+        FileBuilder(
+            file=FileEnum.src_utils_caching, 
+            build_function=ext_content.get_caching_in_caching,
+        ).build()
+        add_new_line(
+            file_path = FileEnum.fast_template_init, 
+            search_value = "caching",
+            remove_matched = True,
+            new_line = ext_content.get_caching_in_fast_template_init(),
+        )
+        add_text_to_obj_end(
+            file_path = FileEnum.src_config,
+            class_name = "Settings",
+            text_to_add = ext_content.get_caching_in_setting()
+        )
+        add_line_to_last_import(
+            FileEnum.src_utils_lifespan,
+            new_line = ext_content.get_caching_in_lifespan_import(),
+        )
+        add_text_to_obj_end(
+            FileEnum.src_utils_lifespan,
+            async_function_name = "start_application",
+            text_to_add = ext_content.get_caching_in_lifespan_start_application(),
+        )
+        add_text_to_obj_end(
+            FileEnum.src_utils_lifespan,
+            async_function_name = "down_application",
+            text_to_add = ext_content.get_caching_in_lifespan_down_application(),
+        )
+
 
 class ExtensionActionParser(ActionParserABC):
     
@@ -103,10 +142,21 @@ class ExtensionActionParser(ActionParserABC):
             default = "en",
             help = "Language Name",
         )
+        sub_parser.add_argument(
+            "-b",
+            "--backend", 
+            default = "redis",
+            help = "Backend Name",
+        )
         
     def get_user_input(self, args):
         if args.name == ExtensionNameEnum.babel:
             args.lang = self.get_input(
                 default_value = args.lang,
                 message = f"Please select the default language (default: en): ",
+            )
+        elif args.name == ExtensionNameEnum.caching:
+            args.backend = self.get_input(
+                default_value = args.backend,
+                message = f"Please select the backend (default: redis): ",
             )

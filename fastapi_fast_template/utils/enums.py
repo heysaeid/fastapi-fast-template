@@ -64,6 +64,7 @@ class FileEnum(StrEnum):
     src_repo_base = "src/repositories/base.py"
     src_routers_init_ = "src/routers/__init__.py"
     src_utils_lifespan = "src/utils/lifespan.py"
+    src_utils_caching = "src/utils/caching.py"
     src_tasks_init_ = "src/tasks/__init__.py"
     
     last_run_scheduler = '.last_run_scheduler.txt'
@@ -77,3 +78,4 @@ class ActionEnum(StrEnum):
 class ExtensionNameEnum(StrEnum):
     babel = "babel"
     scheduler = "scheduler"
+    caching = "caching"

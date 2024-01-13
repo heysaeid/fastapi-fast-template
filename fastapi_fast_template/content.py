@@ -15,10 +15,12 @@ class BaseContent:
             self.config_type = self.app_config["config_type"]
             self.database_type = self.app_config["database_type"]
             self.scheduler = self.app_config.get("scheduler", "False") == "True"
+            self.caching = self.app_config.get("caching", "redis")
         else:
             self.config_type = args.config_type
             self.database_type = args.database_type
             self.scheduler = False
+            self.caching = 'redis'
     
     def get_file_content(
         self, 
@@ -120,10 +122,10 @@ class ExtensionContent(BaseContent):
     translator = FastAPIAndBabel(__file__, app, "{lang}")""".format(lang=lang)
     
     def get_babel_in_fast_template_init(self) -> str:
-        return "babel=True"
+        return "\nbabel=True"
     
     def get_scheduler_in_fast_template_init(self) -> str:
-        return "scheduler=True"
+        return "\nscheduler=True"
     
     def get_scheduler_init(self):
         return self.get_file_content("tasks/__init__.py")
@@ -139,3 +141,22 @@ class ExtensionContent(BaseContent):
     
     def get_scheduler_in_lifespan_down_application(self):
         return "shutdown_scheduler()"
+    
+    def get_caching_in_fast_template_init(self) -> str:
+        return f"\ncaching={self.caching}"
+    
+    def get_caching_in_caching(self):
+        if self.caching == 'redis':
+            return self.get_file_content("utils/caching/redis_cache.py")
+        
+    def get_caching_in_setting(self):
+        return "\nredis_cache_namespace: str = 'ch'"
+    
+    def get_caching_in_lifespan_import(self):
+        return "from .caching import cache"
+    
+    def get_caching_in_lifespan_start_application(self):
+        return "await cache.init(settings.redis_url)"
+    
+    def get_caching_in_lifespan_down_application(self):
+        return "await cache.close()"
