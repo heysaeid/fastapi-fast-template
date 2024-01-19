@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from argparse import ArgumentParser
-from fastapi_fast_template.contents.database.database_dynamic_config import DatabaseDynamicConfig
 from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
 from fastapi_fast_template.utils.helpers import get_app_config
 
@@ -24,7 +23,7 @@ class BaseContent:
     
     def get_file_content(
         self, 
-        file_path: str, 
+        file_path: str,
         **kwargs
     ) -> str:        
         file = Path(f"{os.path.dirname(__file__)}/contents/{file_path}")
@@ -44,7 +43,7 @@ class BaseContent:
 
 
 class RootContent(BaseContent):
-            
+
     def get_fast_template_ini(self) -> str:
         return """
 [app]
@@ -60,9 +59,16 @@ database_type = {database_type}""".format(
     def get_env_sample(self) -> str:
         return self.get_file_content(
             "envs/.env.sample",
-            db_env = DatabaseDynamicConfig.get_db_env_sample(self.database_type),
+            db_env = self.get_db_env_sample(self.database_type),
         )
-        
+
+    def get_db_env_sample(self, database: DatabaseTypeEnum) -> str:
+        config = {
+            DatabaseTypeEnum.SQLALCHEMY: "SQLALCHEMY_DB_URL=",
+            DatabaseTypeEnum.TORTOISE: "TORTOISE_CONFIG_FILE="
+        }
+        return config[database]
+
     def get_conftest(self) -> str:
         return self.get_file_content("tests/conftest.py")
     
@@ -77,8 +83,15 @@ class SrcContent(BaseContent):
         return self.get_file_content(
             config_types[self.config_type], 
             app_name = app_name, 
-            db_config = DatabaseDynamicConfig.get_db_config(self.database_type),
+            db_config = self.get_db_config(self.database_type),
         )
+
+    def get_db_config(self, database: DatabaseTypeEnum) -> str:
+        config = {
+            DatabaseTypeEnum.SQLALCHEMY: "sqlalchemy_db_url: str = \"postgresql+asyncpg://postgres:1234@localhost:5432/testdb\"",
+            DatabaseTypeEnum.TORTOISE: "tortoise_db_url: str = \"postgres://postgres:1234@localhost:5432/testdb\""
+        }
+        return config[database]
     
     def get_app(self) -> str:
         return self.get_file_content("main/app.py",)
@@ -89,6 +102,7 @@ class SrcContent(BaseContent):
     def get_database(self) -> str:
         config_types = {
             DatabaseTypeEnum.SQLALCHEMY: "database/sqlalchemy.py",
+            DatabaseTypeEnum.TORTOISE: "database/tortoise.py",
         }
         return self.get_file_content(
             config_types[self.database_type],
@@ -97,13 +111,28 @@ class SrcContent(BaseContent):
     def get_repository(self) -> str:
         repository = {
             DatabaseTypeEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
+            DatabaseTypeEnum.TORTOISE: "repositories/tortoise/base.py",
         }
         return self.get_file_content(
             repository[self.database_type],
         )
         
     def get_lifespan(self) -> str:
-        return self.get_file_content("utils/lifespan.py")
+        start_application_content = "..."
+        down_application_content = "..."
+        import_content = ""
+        
+        if self.database_type == DatabaseTypeEnum.TORTOISE:
+            start_application_content = "await init_db()"
+            down_application_content = "await close_db()"
+            import_content += "from database import init_db, close_db"
+        
+        return self.get_file_content(
+            "utils/lifespan.py", 
+            start_application_content=start_application_content,
+            down_application_content=down_application_content,
+            import_content=import_content,
+        )
     
     def get_router_init(self) -> str:
         return self.get_file_content("routers/base.py")

@@ -17,6 +17,7 @@ class DocAction(ActionABC):
         print("\t___________________________________\n")
         print(f"\t👉 FastAPI                            {self.get_url('https://fastapi.tiangolo.com')}")
         print(f"\t👉 SQLAlchemy                         {self.get_url('https://www.sqlalchemy.org')}")
+        print(f"\t👉 Tortoise ORM                       {self.get_url('https://tortoise.github.io')}")
         print(f"\t👉 FastAPI-And-Babel                  {self.get_url('https://github.com/heysaeid/fastapi-and-babel')}")
         print(f"\t👉 FastAPI-And-Logging                {self.get_url('https://github.com/heysaeid/fastapi-and-logging')}")
         print(f"\t👉 FastAPI-And-Caching                {self.get_url('https://github.com/heysaeid/fastapi-and-caching')}")

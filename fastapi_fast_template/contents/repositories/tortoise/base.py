@@ -42,7 +42,6 @@ class BaseRepository(Generic[ModelType]):
 
         return await self.model_class.get_or_none(pk=id)
 
-
     async def get_all(self) -> list[ModelType]:
         """
         Retrieves all records of the associated model.
