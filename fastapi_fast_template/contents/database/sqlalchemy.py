@@ -1,21 +1,11 @@
 from typing import AsyncGenerator
-from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import settings
 
 
-url = URL.create(
-    drivername = settings.db_drivername,
-    username = settings.db_username,
-    password = settings.db_password,
-    host = settings.db_host,
-    database = settings.db_database,
-    port = settings.db_port,
-)
-
-engine = create_async_engine(url)
+engine = create_async_engine(settings.sqlalchemy_db_url)
 Base = declarative_base()
 async_session = sessionmaker(
     autocommit = False, 

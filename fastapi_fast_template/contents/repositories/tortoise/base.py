@@ -42,23 +42,34 @@ class BaseRepository(Generic[ModelType]):
 
         return await self.model_class.get_or_none(pk=id)
 
-    async def get_all(self) -> list[ModelType]:
+    async def get_all(
+        self, 
+        skip: PositiveInt = 0, 
+        limit: PositiveInt = 100,
+    ) -> list[ModelType]:
         """
-        Retrieves all records of the associated model.
+        Retrieves a specified range of records of the associated model.
 
-        :return: A list of all instances of the model.
+        :param skip: The number of records to skip before starting to retrieve.
+                    Defaults to 0, meaning no records are skipped.
+        :type skip: PositiveInt
+
+        :param limit: The maximum number of records to retrieve.
+                    Defaults to 100, limiting the number of records returned.
+        :type limit: PositiveInt
+
+        :return: A list of instances of the model within the specified range.
         :rtype: list[ModelType]
 
         Example usage:
         ```
-        # Retrieve all records
-        all_records = await base_repo.get_all()
-        for record in all_records:
+        # Retrieve a range of records with skipping and limiting
+        records_range = await base_repo.get_all(skip=10, limit=20)
+        for record in records_range:
             print(record)
         ```
         """
-
-        return await self.model_class.all()
+        return await self.model_class.all().offset(skip).limit(limit)
 
     async def filter_by(
         self, 
@@ -131,7 +142,6 @@ class BaseRepository(Generic[ModelType]):
         print(f"New record created: {created_record}")
         ```
         """
-
         if entity is None:
             entity = self.model_class(**kwargs)
 
