@@ -198,76 +198,185 @@ class BaseRepository(Generic[ModelType]):
     
     async def update(
         self,
-        obj: ModelType,
-        attributes: dict[str, any],
+        entity: ModelType,
         commit: bool = False,
+        **kwargs,
     ) -> ModelType:
         """
-        Updates the attributes of the specified model instance in the database.
+        Updates the specified model instance with the provided data and persists the changes.
 
-        Parameters:
-        - obj (ModelType): The model instance to update.
-        - attributes (dict[str, any]): Dictionary of attribute names and new values.
-        - commit (bool): Flag indicating whether to commit changes (default: False).
+        :param entity: The instance of the model to be updated.
+        :type entity: ModelType
 
-        Returns:
-        - ModelType: The updated model instance.
+        :param kwargs: Keyword arguments representing the updated data for the model instance.
+        :type kwargs: Any
 
+        :return: The updated instance of the model.
+        :rtype: ModelType
+
+        Example usage:
+        ```
+        # Retrieve a record by ID and update it
+        record_id = 1
+        existing_record = await base_repo.get_by_id(record_id)
+        updated_record = await base_repo.update(existing_record, age=31, city='San Francisco')
+        print(f"Record updated: {updated_record}")
+        ```
         """
-        
-        for attr, value in attributes.items():
-            setattr(obj, attr, value)
+        for key, value in kwargs.items():
+            setattr(entity, key, value)
 
         await self.commit(commit)
-        return obj
+        return entity
     
-    async def delete(self, obj: ModelType, commit: bool = False) -> None:
+    async def delete(self, entity: ModelType) -> None:
         """
-        Deletes the specified model instance from the database.
+        Deletes the specified model instance from the associated data storage.
 
-        Parameters:
-        - obj (ModelType): The model instance to delete.
-        - commit (bool): Flag indicating whether to commit changes (default: False).
+        :param entity: The instance of the model to be deleted.
+        :type entity: ModelType
 
+        Example usage:
+        ```
+        # Retrieve a record by ID and delete it
+        record_id = 1
+        existing_record = await base_repo.get_by_id(record_id)
+        await base_repo.delete(existing_record)
+        print("Record deleted.")
+        ```
         """
-        await self.session.delete(obj)
-        await self.session.commit(commit)
-    
-    async def get_by(self, field: str, value: any) -> list[ModelType] | None:
-        """
-        Retrieves a list of model instance from the database based on the specified field and value.
-
-        Parameters:
-        - field: The name of the field to filter on.
-        - value: The value to filter the field by.
-
-        Returns:
-        - ModelType or None: The retrieved model instance, or None if no matching instance is found.
-
-        """
+        await self.session.delete(entity)
+        await self.session.commit()
         
-        query = self._select()
-        query = query.filter(getattr(self.model_class, field) == value)
-        query = await self.session.scalars(query)
-        return query.all()
+    async def delete_by_id(self, id: PositiveInt) -> None:
+        """
+        Deletes a record of the associated model by its unique identifier.
+
+        :param id: The unique identifier of the record to be deleted.
+        :type id: PositiveInt
+
+        Example usage:
+        ```
+        # Delete a record by ID
+        record_id = 1
+        await base_repo.delete_by_id(record_id)
+        print("Record deleted.")
+        ```
+        """
+        entity = await self.get_by_id(id)
+        await self.delete(entity)
     
-    async def one_or_none(self, field: str, value: any) -> ModelType | None:
+    async def exists(self, id: PositiveInt) -> bool:
         """
-        Retrieves a single model instance from the database based on the specified field and value.
+        Checks if a record with the specified unique identifier exists in the associated data storage.
 
-        Parameters:
-        - field: The name of the field to filter on.
-        - value: The value to filter the field by.
+        :param id: The unique identifier of the record to check for existence.
+        :type id: PositiveInt
 
-        Returns:
-        - ModelType or None: The retrieved model instance, or None if no matching instance is found.
+        :return: True if a record with the specified ID exists, False otherwise.
+        :rtype: bool
 
+        Example usage:
+        ```
+        # Check if a record with ID 1 exists
+        record_id = 1
+        if await base_repo.exists(record_id):
+            print("Record exists.")
+        else:
+            print("Record does not exist.")
+        ```
         """
-        
         query = self._select()
-        query = query.filter(getattr(self.model_class, field) == value)
-        query = await self.session.scalars(query)
-        return query.one_or_none()
+        query = query.filter(self.model_class.id == id).exists()
+        return await self.session.scalars(query)
+    
+    async def bulk_create(
+        self, 
+        entities: list[ModelType], 
+        commit: bool = True
+    ) -> list[ModelType]:
+        """
+        Creates multiple records of the associated model in bulk.
+
+        :param entities: A list of model instances to be created in bulk.
+        :type entities: list[ModelType]
+
+        :return: The list of created model instances.
+        :rtype: list[ModelType]
+
+        Example usage:
+        ```
+        # Create multiple records in bulk
+        records_to_create = [
+            MyModel(name='John Doe', age=30, city='New York'),
+            MyModel(name='Jane Doe', age=25, city='Los Angeles'),
+        ]
+        created_records = await base_repo.bulk_create(records_to_create)
+        print(f"{len(created_records)} records created in bulk.")
+        ```
+        """
+        for entity in entities:
+            self.session.add(entity)
+
+        await self.commit(commit)
+        return entities
+    
+    async def bulk_update(
+        self, 
+        entities: list[ModelType],
+        commit: bool = True, 
+    ) -> list[ModelType]:
+        """
+        Updates multiple records of the associated model in bulk.
+
+        :param entities: A list of model instances with updated data to be applied in bulk.
+        :type entities: list[ModelType]
+
+        :return: The list of updated model instances.
+        :rtype: list[ModelType]
+
+        Example usage:
+        ```
+        # Update multiple records in bulk
+        records_to_update = [
+            MyModel(id=1, name='John Doe', age=31, city='San Francisco'),
+            MyModel(id=2, name='Jane Doe', age=26, city='Los Angeles'),
+        ]
+        updated_records = await base_repo.bulk_update(records_to_update)
+        print(f"{len(updated_records)} records updated in bulk.")
+        ```
+        """
+        for entity in entities:
+            await self.session.merge(entity)
+        await self.commit(commit)
+        return entities
+    
+    async def bulk_delete(
+        self, 
+        entities: list[ModelType], 
+        commit: bool = True
+    ) -> None:
+        """
+        Deletes multiple records of the associated model in bulk.
+
+        :param entities: A list of model instances to be deleted in bulk.
+        :type entities: List[ModelType]
+
+        Example usage:
+        ```
+        # Delete multiple records in bulk
+        records_to_delete = [
+            MyModel(id=1),
+            MyModel(id=2),
+        ]
+        await base_repo.bulk_delete(records_to_delete)
+        print(f"{len(records_to_delete)} records deleted in bulk.")
+        ```
+        """
+        for entity in entities:
+            await self.session.delete(entity)
+        await self.commit(commit)
+        return entities
     
     def _select(self) -> Select:
         return select(self.model_class)

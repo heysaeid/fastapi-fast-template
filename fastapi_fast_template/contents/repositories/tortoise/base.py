@@ -170,7 +170,6 @@ class BaseRepository(Generic[ModelType]):
         print(f"Record updated: {updated_record}")
         ```
         """
-
         for key, value in kwargs.items():
             setattr(entity, key, value)
 
@@ -193,7 +192,6 @@ class BaseRepository(Generic[ModelType]):
         print("Record deleted.")
         ```
         """
-
         await entity.delete()
 
     async def delete_by_id(self, id: PositiveInt) -> None:
@@ -211,7 +209,6 @@ class BaseRepository(Generic[ModelType]):
         print("Record deleted.")
         ```
         """
-
         await self.model_class.get_or_none(pk=id).delete()
 
     async def exists(self, id: PositiveInt) -> bool:
@@ -234,7 +231,6 @@ class BaseRepository(Generic[ModelType]):
             print("Record does not exist.")
         ```
         """
-
         return await self.model_class.filter(pk=id).exists()
 
     async def count(self) -> PositiveInt:
@@ -251,9 +247,7 @@ class BaseRepository(Generic[ModelType]):
         print(f"Total records: {total_records}")
         ```
         """
-
         return await self.model_class.all().count()
-
 
     async def bulk_create(
         self, 
@@ -279,15 +273,7 @@ class BaseRepository(Generic[ModelType]):
         print(f"{len(created_records)} records created in bulk.")
         ```
         """
-
         await self.model_class.bulk_create(entities)
-        return entities
-
-    async def bulk_update(
-        self, 
-        entities: list[ModelType]
-    ) -> list[ModelType]:
-        await self.model_class.bulk_update(entities)
         return entities
     
     async def bulk_update(
@@ -314,7 +300,6 @@ class BaseRepository(Generic[ModelType]):
         print(f"{len(updated_records)} records updated in bulk.")
         ```
         """
-
         await self.model_class.bulk_update(entities)
         return entities
 
@@ -336,6 +321,5 @@ class BaseRepository(Generic[ModelType]):
         print(f"{len(records_to_delete)} records deleted in bulk.")
         ```
         """
-
         for entity in entities:
             await entity.delete()
