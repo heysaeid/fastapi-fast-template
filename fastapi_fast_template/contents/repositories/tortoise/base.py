@@ -13,11 +13,12 @@ class BaseRepository(Generic[ModelType]):
     This class provides a set of methods for creating, reading, updating, and deleting models.
     It is designed to be subclassed by specific repository implementations.
     """
+
     model_class: ModelType
-    
+
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id})"
-    
+
     async def get_by_id(self, id: PositiveInt) -> ModelType | None:
         """
         Retrieves a single record of the associated model by its unique identifier.
@@ -43,8 +44,8 @@ class BaseRepository(Generic[ModelType]):
         return await self.model_class.get_or_none(pk=id)
 
     async def get_all(
-        self, 
-        skip: PositiveInt = 0, 
+        self,
+        skip: PositiveInt = 0,
         limit: PositiveInt = 100,
     ) -> list[ModelType]:
         """
@@ -71,11 +72,7 @@ class BaseRepository(Generic[ModelType]):
         """
         return await self.model_class.all().offset(skip).limit(limit)
 
-    async def filter_by(
-        self, 
-        q_filters: Q = Q(), 
-        **kwargs
-    ) -> list[ModelType]:
+    async def filter_by(self, q_filters: Q = Q(), **kwargs) -> list[ModelType]:
         """
         Filters records of the associated model based on provided filters and keyword arguments.
 
@@ -114,7 +111,7 @@ class BaseRepository(Generic[ModelType]):
         """
         await entity.save()
         return entity
-    
+
     async def create(self, entity: ModelType = None, **kwargs) -> ModelType:
         """
         Creates a new record of the associated model, optionally initializing it with provided data.
@@ -249,10 +246,7 @@ class BaseRepository(Generic[ModelType]):
         """
         return await self.model_class.all().count()
 
-    async def bulk_create(
-        self, 
-        entities: list[ModelType]
-    ) -> list[ModelType]:
+    async def bulk_create(self, entities: list[ModelType]) -> list[ModelType]:
         """
         Creates multiple records of the associated model in bulk.
 
@@ -275,11 +269,8 @@ class BaseRepository(Generic[ModelType]):
         """
         await self.model_class.bulk_create(entities)
         return entities
-    
-    async def bulk_update(
-        self, 
-        entities: list[ModelType]
-    ) -> list[ModelType]:
+
+    async def bulk_update(self, entities: list[ModelType]) -> list[ModelType]:
         """
         Updates multiple records of the associated model in bulk.
 

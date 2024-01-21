@@ -18,8 +18,9 @@ class BaseRepository(Generic[ModelType]):
     Parameters:
     - db_session (AsyncSession): The asynchronous database session to use for database operations.
     """
+
     model_class: ModelType
-    
+
     def __init__(self, db_session: AsyncSession) -> None:
         self.session = db_session
 
@@ -48,11 +49,11 @@ class BaseRepository(Generic[ModelType]):
         query = query.filter(self.model_class.id == id)
         query = await self.session.scalars(query)
         return query.one_or_none()
-    
+
     async def get_all(
-        self, 
-        skip: PositiveInt = 0, 
-        limit: PositiveInt = 100, 
+        self,
+        skip: PositiveInt = 0,
+        limit: PositiveInt = 100,
     ) -> list[ModelType]:
         """
         Retrieves a specified range of records of the associated model.
@@ -80,11 +81,9 @@ class BaseRepository(Generic[ModelType]):
         query = query.offset(skip).limit(limit)
         query = await self.session.scalars(query)
         return query.all()
-    
+
     async def filter_by(
-        self, 
-        query: Select = None, 
-        **kwargs
+        self, query: Select = None, **kwargs
     ) -> list[ModelType]:
         """
         Filters records of the associated model based on provided filters and keyword arguments.
@@ -115,11 +114,7 @@ class BaseRepository(Generic[ModelType]):
         query = await self.session.scalars(query)
         return query.all()
 
-    async def commit(
-        self, 
-        commit: bool = True, 
-        rollback: bool = True
-    ) -> None:
+    async def commit(self, commit: bool = True, rollback: bool = True) -> None:
         """
         Commits the current transaction or rolls back changes based on the provided flags.
 
@@ -128,7 +123,7 @@ class BaseRepository(Generic[ModelType]):
         - rollback (bool): Flag indicating whether to rollback changes on exception (default: True).
 
         """
-        
+
         try:
             if commit:
                 self.before_commit()
@@ -145,10 +140,10 @@ class BaseRepository(Generic[ModelType]):
         """
         Hook method called before committing changes to the database.
         Implement this method in subclasses to perform any pre-commit operations.
-        
+
         """
         ...
-        
+
     async def after_commit(self):
         """
         Hook method called after committing changes to the database.
@@ -156,9 +151,9 @@ class BaseRepository(Generic[ModelType]):
 
         """
         ...
-        
+
     async def create(
-        self, 
+        self,
         entity: ModelType = None,
         commit: bool = False,
         **kwargs,
@@ -188,14 +183,14 @@ class BaseRepository(Generic[ModelType]):
         created_record = await base_repo.create(entity=existing_record)
         print(f"New record created: {created_record}")
         ```
-        """  
+        """
         if entity is None:
             entity = self.model_class(**kwargs)
-        
+
         self.session.add(entity)
         await self.commit(commit)
         return entity
-    
+
     async def update(
         self,
         entity: ModelType,
@@ -228,7 +223,7 @@ class BaseRepository(Generic[ModelType]):
 
         await self.commit(commit)
         return entity
-    
+
     async def delete(self, entity: ModelType) -> None:
         """
         Deletes the specified model instance from the associated data storage.
@@ -247,7 +242,7 @@ class BaseRepository(Generic[ModelType]):
         """
         await self.session.delete(entity)
         await self.session.commit()
-        
+
     async def delete_by_id(self, id: PositiveInt) -> None:
         """
         Deletes a record of the associated model by its unique identifier.
@@ -265,7 +260,7 @@ class BaseRepository(Generic[ModelType]):
         """
         entity = await self.get_by_id(id)
         await self.delete(entity)
-    
+
     async def exists(self, id: PositiveInt) -> bool:
         """
         Checks if a record with the specified unique identifier exists in the associated data storage.
@@ -289,11 +284,9 @@ class BaseRepository(Generic[ModelType]):
         query = self._select()
         query = query.filter(self.model_class.id == id).exists()
         return await self.session.scalars(query)
-    
+
     async def bulk_create(
-        self, 
-        entities: list[ModelType], 
-        commit: bool = True
+        self, entities: list[ModelType], commit: bool = True
     ) -> list[ModelType]:
         """
         Creates multiple records of the associated model in bulk.
@@ -320,11 +313,11 @@ class BaseRepository(Generic[ModelType]):
 
         await self.commit(commit)
         return entities
-    
+
     async def bulk_update(
-        self, 
+        self,
         entities: list[ModelType],
-        commit: bool = True, 
+        commit: bool = True,
     ) -> list[ModelType]:
         """
         Updates multiple records of the associated model in bulk.
@@ -350,11 +343,9 @@ class BaseRepository(Generic[ModelType]):
             await self.session.merge(entity)
         await self.commit(commit)
         return entities
-    
+
     async def bulk_delete(
-        self, 
-        entities: list[ModelType], 
-        commit: bool = True
+        self, entities: list[ModelType], commit: bool = True
     ) -> None:
         """
         Deletes multiple records of the associated model in bulk.
@@ -377,6 +368,6 @@ class BaseRepository(Generic[ModelType]):
             await self.session.delete(entity)
         await self.commit(commit)
         return entities
-    
+
     def _select(self) -> Select:
         return select(self.model_class)

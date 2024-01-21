@@ -3,7 +3,6 @@ from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-
 class AppEnvironmentEnum(str, Enum):
     DEVELOPMENT = "dev"
     PRODUCTION = "prod"
@@ -35,15 +34,15 @@ class ProdSettings(Settings):
 @lru_cache
 def get_settings():
     env = Settings().app_env
-    
+
     if env == AppEnvironmentEnum.DEVELOPMENT:
         return DevSettings()
     elif env == AppEnvironmentEnum.TEST:
         return TestSettings()
     elif env == AppEnvironmentEnum.PRODUCTION:
         return ProdSettings()
-    
+
     raise ValueError("Invalid APP_ENV value")
-    
+
 
 settings = get_settings()
