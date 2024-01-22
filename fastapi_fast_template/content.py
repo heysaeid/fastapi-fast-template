@@ -1,6 +1,7 @@
 import os
-from pathlib import Path
 from argparse import ArgumentParser
+from pathlib import Path
+
 from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
 from fastapi_fast_template.utils.helpers import get_app_config
 
@@ -66,6 +67,9 @@ database_type = {self.database_type}"""
 
     def get_conftest(self) -> str:
         return self.get_file_content("tests/conftest.py")
+
+    def get_pre_commit(self) -> str:
+        return self.get_file_content("git/.pre-commit-config.yaml")
 
 
 class SrcContent(BaseContent):

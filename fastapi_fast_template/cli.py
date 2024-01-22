@@ -1,11 +1,12 @@
-import sys
 import argparse
-from fastapi_fast_template.actions.main import InitAction, InitActionParser
+import sys
+
+from fastapi_fast_template.actions.doc import DocAction, DocActionParser
 from fastapi_fast_template.actions.extension import (
     ExtensionAction,
     ExtensionActionParser,
 )
-from fastapi_fast_template.actions.doc import DocAction, DocActionParser
+from fastapi_fast_template.actions.main import InitAction, InitActionParser
 from fastapi_fast_template.utils.enums import ActionEnum
 
 

@@ -1,6 +1,8 @@
 from argparse import Namespace
-from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
+
 from termcolor import colored
+
+from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
 
 
 class DocAction(ActionABC):

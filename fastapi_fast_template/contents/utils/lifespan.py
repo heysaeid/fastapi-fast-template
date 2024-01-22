@@ -1,15 +1,16 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-{import_content}
+from fastapi import FastAPI
+
+{import_content}  # noqa: B018
 
 
 async def start_application() -> None:
-    {start_application_content}
+    {start_application_content}  # noqa: B018
 
 
 async def down_application() -> None:
-    {down_application_content}
+    {down_application_content}  # noqa: B018
 
 
 @asynccontextmanager

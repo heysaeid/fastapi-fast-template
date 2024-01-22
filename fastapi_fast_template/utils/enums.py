@@ -52,6 +52,7 @@ class FileEnum(StrEnum):
     gitignore = ".gitignore"
     env_sample = ".env.sample"
     env = ".env"
+    pre_commit_config = ".pre-commit-config.yaml"
 
     tests_conftest = "tests/conftest.py"
 

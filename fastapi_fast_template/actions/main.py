@@ -1,5 +1,6 @@
 import sys
 from argparse import ArgumentParser
+
 from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
 from fastapi_fast_template.content import RootContent, SrcContent
 from fastapi_fast_template.utils.enums import (
@@ -10,7 +11,7 @@ from fastapi_fast_template.utils.enums import (
     DirectoryEnum,
     FileEnum,
 )
-from fastapi_fast_template.utils.helpers import create_directory, FileBuilder
+from fastapi_fast_template.utils.helpers import FileBuilder, create_directory
 
 
 class InitAction(ActionABC):
@@ -64,6 +65,10 @@ class InitAction(ActionABC):
             FileBuilder(
                 file=".env.sample",
                 build_function=self.root_content.get_env_sample,
+            ),
+            FileBuilder(
+                file=FileEnum.pre_commit_config,
+                build_function=self.root_content.get_pre_commit,
             ),
             FileBuilder(file=".env"),
             # tests

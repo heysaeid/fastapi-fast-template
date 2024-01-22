@@ -1,5 +1,6 @@
 import os
 from argparse import ArgumentParser
+
 from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
 from fastapi_fast_template.content import ExtensionContent
 from fastapi_fast_template.utils.enums import (
@@ -9,8 +10,8 @@ from fastapi_fast_template.utils.enums import (
 )
 from fastapi_fast_template.utils.helpers import (
     FileBuilder,
-    add_new_line,
     add_line_to_last_import,
+    add_new_line,
     add_text_to_obj_end,
     check_extension_exists,
     create_directory,

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from argparse import _SubParsersAction, Namespace
+from argparse import Namespace, _SubParsersAction
 
 
 class ActionABC(ABC):
@@ -31,8 +31,10 @@ class ActionParserABC(ABC):
         self,
         default_value: str,
         message: str,
-        choices: list[str] = [],
+        choices: list[str] = None,
     ):
+        if choices is None:
+            choices = []
         input_value = input(message)
         if input_value:
             if choices and input_value not in choices:

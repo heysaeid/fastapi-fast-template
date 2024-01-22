@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar
+
 from pydantic.types import PositiveInt
 from tortoise.queryset import Q
-
 
 ModelType = TypeVar("ModelType")
 

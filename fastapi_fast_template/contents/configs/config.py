@@ -1,5 +1,6 @@
 from enum import Enum
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,7 +17,7 @@ class Settings(BaseSettings):
     app_port: int = 8000
     debug: bool = True
     description: str = ""
-    {db_config}
+    {db_config}  # noqa: B018
 
 
 class DevSettings(Settings):

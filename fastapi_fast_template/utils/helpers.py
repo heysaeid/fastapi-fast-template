@@ -1,5 +1,5 @@
-import os
 import ast
+import os
 from configparser import ConfigParser
 
 
@@ -79,8 +79,10 @@ def get_app_config() -> dict | None:
 
 class FileBuilder:
     def __init__(
-        self, file: str, build_function: callable = None, inputs: dict = {}
+        self, file: str, build_function: callable = None, inputs: dict = None
     ):
+        if inputs is None:
+            inputs = {}
         self.file = file
         self.build_function = build_function
         self.inputs = inputs
