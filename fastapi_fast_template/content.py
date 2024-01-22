@@ -71,6 +71,9 @@ database_type = {self.database_type}"""
     def get_pre_commit(self) -> str:
         return self.get_file_content("git/.pre-commit-config.yaml")
 
+    def get_ruff_toml(self) -> str:
+        return self.get_file_content("ruff.toml")
+
 
 class SrcContent(BaseContent):
     def get_config(self, app_name: str) -> str:

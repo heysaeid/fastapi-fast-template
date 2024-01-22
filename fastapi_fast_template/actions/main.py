@@ -70,6 +70,10 @@ class InitAction(ActionABC):
                 file=FileEnum.pre_commit_config,
                 build_function=self.root_content.get_pre_commit,
             ),
+            FileBuilder(
+                file=FileEnum.ruff_toml,
+                build_function=self.root_content.get_ruff_toml,
+            ),
             FileBuilder(file=".env"),
             # tests
             FileBuilder(file="tests/conftest.py"),

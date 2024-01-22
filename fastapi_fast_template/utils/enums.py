@@ -53,6 +53,7 @@ class FileEnum(StrEnum):
     env_sample = ".env.sample"
     env = ".env"
     pre_commit_config = ".pre-commit-config.yaml"
+    ruff_toml = "ruff.toml"
 
     tests_conftest = "tests/conftest.py"
 
