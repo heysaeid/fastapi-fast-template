@@ -157,7 +157,7 @@ def add_text_to_obj_end(
         print(f"Module '{file_path}' not found")
 
 
-def check_extension_exists(self, extension: Exception) -> bool:
+def check_extension_exists(extension: Exception) -> bool:
     config = get_app_config()
     if config.get(extension) is not None:
         return True
