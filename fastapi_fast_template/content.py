@@ -2,7 +2,7 @@ import os
 from argparse import ArgumentParser
 from pathlib import Path
 
-from fastapi_fast_template.utils.enums import ConfigTypeEnum, DatabaseTypeEnum
+from fastapi_fast_template.utils.enums import ConfigTypeEnum, ORMEnum
 from fastapi_fast_template.utils.helpers import get_app_config
 
 
@@ -12,14 +12,14 @@ class BaseContent:
 
         if self.app_config:
             self.config_type = self.app_config["config_type"]
-            self.database_type = self.app_config["database_type"]
+            self.orm = self.app_config["orm"]
             self.scheduler = (
                 self.app_config.get("scheduler", "False") == "True"
             )
             self.caching = self.app_config.get("caching", "redis")
         else:
             self.config_type = args.config_type
-            self.database_type = args.database_type
+            self.orm = args.orm
             self.scheduler = False
             self.caching = "redis"
 
@@ -45,7 +45,7 @@ class RootContent(BaseContent):
         return f"""
 [app]
 config_type = {self.config_type}
-database_type = {self.database_type}"""
+orm = {self.orm}"""
 
     def get_gitignore(self) -> str:
         return self.get_file_content(
@@ -55,15 +55,15 @@ database_type = {self.database_type}"""
     def get_env_sample(self) -> str:
         return self.get_file_content(
             "envs/.env.sample",
-            db_env=self.get_db_env_sample(self.database_type),
+            db_env=self.get_db_env_sample(self.orm),
         )
 
-    def get_db_env_sample(self, database: DatabaseTypeEnum) -> str:
+    def get_db_env_sample(self, orm: ORMEnum) -> str:
         config = {
-            DatabaseTypeEnum.SQLALCHEMY: "SQLALCHEMY_DB_URL=",
-            DatabaseTypeEnum.TORTOISE: "TORTOISE_CONFIG_FILE=",
+            ORMEnum.SQLALCHEMY: "SQLALCHEMY_DB_URL=",
+            ORMEnum.TORTOISE: "TORTOISE_CONFIG_FILE=",
         }
-        return config[database]
+        return config[orm]
 
     def get_conftest(self) -> str:
         return self.get_file_content("tests/conftest.py")
@@ -84,15 +84,15 @@ class SrcContent(BaseContent):
         return self.get_file_content(
             config_types[self.config_type],
             app_name=app_name,
-            db_config=self.get_db_config(self.database_type),
+            db_config=self.get_db_config(self.orm),
         )
 
-    def get_db_config(self, database: DatabaseTypeEnum) -> str:
+    def get_db_config(self, orm: ORMEnum) -> str:
         config = {
-            DatabaseTypeEnum.SQLALCHEMY: 'sqlalchemy_db_url: str = "postgresql+asyncpg://postgres:1234@localhost:5432/testdb"',
-            DatabaseTypeEnum.TORTOISE: 'tortoise_db_url: str = "postgres://postgres:1234@localhost:5432/testdb"',
+            ORMEnum.SQLALCHEMY: 'sqlalchemy_db_url: str = "postgresql+asyncpg://postgres:1234@localhost:5432/testdb"',
+            ORMEnum.TORTOISE: 'tortoise_db_url: str = "postgres://postgres:1234@localhost:5432/testdb"',
         }
-        return config[database]
+        return config[orm]
 
     def get_app(self) -> str:
         return self.get_file_content(
@@ -106,20 +106,20 @@ class SrcContent(BaseContent):
 
     def get_database(self) -> str:
         config_types = {
-            DatabaseTypeEnum.SQLALCHEMY: "database/sqlalchemy.py",
-            DatabaseTypeEnum.TORTOISE: "database/tortoise.py",
+            ORMEnum.SQLALCHEMY: "orm/sqlalchemy.py",
+            ORMEnum.TORTOISE: "orm/tortoise.py",
         }
         return self.get_file_content(
-            config_types[self.database_type],
+            config_types[self.orm],
         )
 
     def get_repository(self) -> str:
         repository = {
-            DatabaseTypeEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
-            DatabaseTypeEnum.TORTOISE: "repositories/tortoise/base.py",
+            ORMEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
+            ORMEnum.TORTOISE: "repositories/tortoise/base.py",
         }
         return self.get_file_content(
-            repository[self.database_type],
+            repository[self.orm],
         )
 
     def get_lifespan(self) -> str:
@@ -127,7 +127,7 @@ class SrcContent(BaseContent):
         down_application_content = "..."
         import_content = ""
 
-        if self.database_type == DatabaseTypeEnum.TORTOISE:
+        if self.orm == ORMEnum.TORTOISE:
             start_application_content = "await init_db()"
             down_application_content = "await close_db()"
             import_content += "from database import init_db, close_db"

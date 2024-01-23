@@ -1,5 +1,6 @@
 from config import settings
 from fastapi import FastAPI
+
 from routers import api_router
 from utils.lifespan import lifespan
 

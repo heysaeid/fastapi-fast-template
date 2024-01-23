@@ -1,3 +1,4 @@
+import os
 import sys
 from argparse import ArgumentParser
 
@@ -7,9 +8,9 @@ from fastapi_fast_template.utils.enums import (
     ActionEnum,
     ArgumentDefaultValueEnum,
     ConfigTypeEnum,
-    DatabaseTypeEnum,
     DirectoryEnum,
     FileEnum,
+    ORMEnum,
 )
 from fastapi_fast_template.utils.helpers import FileBuilder, create_directory
 
@@ -19,6 +20,10 @@ class InitAction(ActionABC):
         action = sys.argv[-1]
         if action == ActionEnum.init:
             self.init(args)
+            self.run_initialization_commands()
+
+    def run_initialization_commands(self):
+        os.system("pre-commit install")
 
     def init(self, args: ArgumentParser) -> None:
         self.create_initial_dirs()
@@ -135,11 +140,11 @@ class InitActionParser(ActionParserABC):
             help="Type config module",
         )
         sub_parser.add_argument(
-            "-dbt",
-            "--database_type",
-            default=ArgumentDefaultValueEnum.DATABASE_TYPE,
-            choices=DatabaseTypeEnum.get_values(),
-            help="Database Type",
+            "-orm",
+            "--orm",
+            default=ArgumentDefaultValueEnum.ORM,
+            choices=ORMEnum.get_values(),
+            help="ORM",
         )
 
     def get_user_input(self, args):
@@ -152,8 +157,8 @@ class InitActionParser(ActionParserABC):
             message=f"Enter the config module type (default: {ArgumentDefaultValueEnum.CONFIG_TYPE}): ",
             choices=ConfigTypeEnum.get_values(),
         )
-        args.database_type = self.get_input(
-            default_value=args.database_type.value,
-            message=f"Enter the database type (default: {ArgumentDefaultValueEnum.DATABASE_TYPE}): ",
-            choices=DatabaseTypeEnum.get_values(),
+        args.orm = self.get_input(
+            default_value=args.orm.value,
+            message=f"Enter the ORM (default: {ArgumentDefaultValueEnum.ORM}): ",
+            choices=ORMEnum.get_values(),
         )

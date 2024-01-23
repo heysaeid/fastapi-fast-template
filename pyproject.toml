@@ -48,6 +48,7 @@ dependencies = [
     "asyncpg",
     "ruff",
     "pre-commit",
+    "termcolor",
 ]
 dynamic = ["version"]
 

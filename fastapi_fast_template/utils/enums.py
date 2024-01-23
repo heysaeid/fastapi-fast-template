@@ -22,16 +22,15 @@ class ConfigTypeEnum(EnumMixin, StrEnum):
     SINGLE = "simple"
 
 
-class DatabaseTypeEnum(EnumMixin, StrEnum):
+class ORMEnum(EnumMixin, StrEnum):
     SQLALCHEMY = "sqlalchemy"
     TORTOISE = "tortoise"
-    MONGODB = "mongodb"
 
 
 class ArgumentDefaultValueEnum(StrEnum):
     APP_NAME = "Fast Template"
     CONFIG_TYPE = ConfigTypeEnum.MULTIPLE
-    DATABASE_TYPE = DatabaseTypeEnum.SQLALCHEMY
+    ORM = ORMEnum.SQLALCHEMY
 
 
 class DirectoryEnum(StrEnum):
