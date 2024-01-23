@@ -46,6 +46,8 @@ dependencies = [
     "pydantic-settings",
     "sqlalchemy[asyncio]",
     "asyncpg",
+    "ruff",
+    "pre-commit",
 ]
 dynamic = ["version"]
 
