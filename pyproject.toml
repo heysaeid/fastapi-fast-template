@@ -45,6 +45,7 @@ dependencies = [
     "python-dotenv",
     "pydantic-settings",
     "sqlalchemy[asyncio]",
+    "tortoise-orm",
     "asyncpg",
     "ruff",
     "pre-commit",
