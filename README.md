@@ -4,11 +4,12 @@ This library helps you not get involved in the complexities of FastAPI and its l
 
 ## Features
 - Proper structure and ready
-- Using babel for internationalization and localization - [fastapi-and-babel](https://github.com/heysaeid/fastapi-and-babel.git)
-- Powerful logging tools using [fastapi-and-logging](https://github.com/heysaeid/fastapi-and-logging) - (supports logging incoming, outgoing, and error events.)
-- Support for different backends for caching [fastapi-and-caching](https://github.com/heysaeid/fastapi-and-caching)
-- Using [Ruff](https://github.com/astral-sh/ruff) as a linter and formatter.
-- Using Git [pre-commit](https://pre-commit.com/).
+- [Ruff](https://github.com/astral-sh/ruff) - An extremely fast Python linter and code formatter, written in Rust.
+- [pre-commit](https://pre-commit.com/) - A framework for managing and maintaining multi-language pre-commit hooks.
+- [fastapi-and-logging](https://github.com/heysaeid/fastapi-and-logging) - FastAPI-and-Logging simplifies log handling, allowing for effective organization, tracking, and analysis of logs in FastAPI applications, aiding in debugging and issue resolution.
+- [fastapi-and-caching](https://github.com/heysaeid/fastapi-and-caching) - FastAPI and Caching is an extension for FastAPI that provides support for various caching mechanisms, allowing you to easily leverage caching within your FastAPI applications.
+- [fastapi-and-babel](https://github.com/heysaeid/fastapi-and-babel.git) - FastAPIAndBabel allows you to easily use babel in your FastAPI projects and offers some features to improve and ease things.
+- [APScheduler](https://apscheduler.readthedocs.io/en/3.x/) Advanced Python Scheduler (APScheduler) is a Python library that lets you schedule your Python code to be executed later, either just once or periodically.
 
 
 ## Install
@@ -123,3 +124,14 @@ def root():
 ```
 
 For more information, [click here](https://github.com/heysaeid/fastapi-and-caching).
+
+
+### FastAPI-And-Logging
+You can add logging to your project as follows.
+```
+fast extension --name logging
+Please select the log type (default: incoming): (choose from incoming, apicall, exception)
+```
+You can now check out the app.py module and apply your changes to it.
+
+For more information, [click here](https://github.com/heysaeid/fastapi-and-logging).
