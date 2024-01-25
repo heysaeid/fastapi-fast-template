@@ -2,7 +2,11 @@ import os
 from argparse import ArgumentParser
 from pathlib import Path
 
-from fastapi_fast_template.utils.enums import ConfigTypeEnum, ORMEnum
+from fastapi_fast_template.utils.enums import (
+    ConfigTypeEnum,
+    LoggingTypeEnum,
+    ORMEnum,
+)
 from fastapi_fast_template.utils.helpers import get_app_config
 
 
@@ -42,10 +46,10 @@ class BaseContent:
 
 class RootContent(BaseContent):
     def get_fast_template_ini(self) -> str:
-        return f"""
-[app]
-config_type = {self.config_type}
-orm = {self.orm}"""
+        return f"""[app]
+config_type={self.config_type}
+orm={self.orm}
+"""
 
     def get_gitignore(self) -> str:
         return self.get_file_content(
@@ -60,8 +64,8 @@ orm = {self.orm}"""
 
     def get_db_env_sample(self, orm: ORMEnum) -> str:
         config = {
-            ORMEnum.SQLALCHEMY: "SQLALCHEMY_DB_URL=",
-            ORMEnum.TORTOISE: "TORTOISE_CONFIG_FILE=",
+            ORMEnum.SQLALCHEMY: "\nSQLALCHEMY_DB_URL=",
+            ORMEnum.TORTOISE: "\nTORTOISE_CONFIG_FILE=",
         }
         return config[orm]
 
@@ -193,3 +197,27 @@ class ExtensionContent(BaseContent):
 
     def get_caching_in_lifespan_down_application(self):
         return "await cache.close()"
+
+    def get_logging_in_fast_template_init(self, type: LoggingTypeEnum) -> str:
+        logging_type = {
+            LoggingTypeEnum.INCOMING: "incoming_log=True",
+            LoggingTypeEnum.APICALL: "apicall_log=True",
+            LoggingTypeEnum.EXCEPTION: "exception_log=True",
+        }
+        return logging_type[type]
+
+    def get_logging_import_in_app(self, type: LoggingTypeEnum) -> str:
+        logging_type = {
+            LoggingTypeEnum.INCOMING: "from fastapi_and_logging import FastAPIIncomingLog",
+            LoggingTypeEnum.APICALL: "from fastapi_and_logging import ExceptionLogger",
+            LoggingTypeEnum.EXCEPTION: "from fastapi_and_logging.http_clients import HTTPXLogger",
+        }
+        return logging_type[type]
+
+    def get_logging_class_in_app(self, type: LoggingTypeEnum) -> str:
+        logging_type = {
+            LoggingTypeEnum.INCOMING: "\tFastAPIIncomingLog(app)",
+            LoggingTypeEnum.APICALL: "\texception_logger = ExceptionLogger(app=app)",
+            LoggingTypeEnum.EXCEPTION: "\tHTTPXLogger()",
+        }
+        return logging_type[type]

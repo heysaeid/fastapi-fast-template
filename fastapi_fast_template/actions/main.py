@@ -18,7 +18,7 @@ from fastapi_fast_template.utils.helpers import FileBuilder, create_directory
 class InitAction(ActionABC):
     def perform_action(self, args: ArgumentParser):
         action = sys.argv[-1]
-        if action == ActionEnum.init:
+        if action == ActionEnum.INIT:
             self.init(args)
             self.run_initialization_commands()
 
@@ -32,15 +32,15 @@ class InitAction(ActionABC):
 
     def create_initial_dirs(self) -> None:
         directories = (
-            DirectoryEnum.logs,
-            DirectoryEnum.tests,
-            DirectoryEnum.src,
-            DirectoryEnum.src_routers,
-            DirectoryEnum.src_repositories,
-            DirectoryEnum.src_services,
-            DirectoryEnum.src_models,
-            DirectoryEnum.src_schemas,
-            DirectoryEnum.src_utils,
+            DirectoryEnum.LOGS,
+            DirectoryEnum.TESTS,
+            DirectoryEnum.SRC,
+            DirectoryEnum.SRC_ROUTERS,
+            DirectoryEnum.SRC_REPOSITORIES,
+            DirectoryEnum.SRC_SERVICES,
+            DirectoryEnum.SRC_MODELS,
+            DirectoryEnum.SRC_SCHEMAS,
+            DirectoryEnum.SRC_UTILS,
         )
         created_dirs = []
         for directory in directories:
@@ -72,11 +72,11 @@ class InitAction(ActionABC):
                 build_function=self.root_content.get_env_sample,
             ),
             FileBuilder(
-                file=FileEnum.pre_commit_config,
+                file=FileEnum.PRE_COMMIT_CONFIG,
                 build_function=self.root_content.get_pre_commit,
             ),
             FileBuilder(
-                file=FileEnum.ruff_toml,
+                file=FileEnum.RUFF_TOML,
                 build_function=self.root_content.get_ruff_toml,
             ),
             FileBuilder(file=".env"),
@@ -84,31 +84,31 @@ class InitAction(ActionABC):
             FileBuilder(file="tests/conftest.py"),
             # src
             FileBuilder(
-                file=FileEnum.src_config,
+                file=FileEnum.SRC_CONFIG,
                 build_function=self.src_content.get_config,
                 inputs={"app_name": args.app_name},
             ),
             FileBuilder(
-                file=FileEnum.src_app, build_function=self.src_content.get_app
+                file=FileEnum.SRC_APP, build_function=self.src_content.get_app
             ),
             FileBuilder(
-                file=FileEnum.src_main,
+                file=FileEnum.SRC_MAIN,
                 build_function=self.src_content.get_main,
             ),
             FileBuilder(
-                file=FileEnum.src_database,
+                file=FileEnum.SRC_DATABASE,
                 build_function=self.src_content.get_database,
             ),
             FileBuilder(
-                file=FileEnum.src_repo_base,
+                file=FileEnum.SRC_REPO_BASE,
                 build_function=self.src_content.get_repository,
             ),
             FileBuilder(
-                file=FileEnum.src_routers_init_,
+                file=FileEnum.SRC_ROUTERS_INIT_,
                 build_function=self.src_content.get_router_init,
             ),
             FileBuilder(
-                file=FileEnum.src_utils_lifespan,
+                file=FileEnum.SRC_UTILS_LIFESPAN,
                 build_function=self.src_content.get_lifespan,
             ),
         ]
@@ -148,16 +148,16 @@ class InitActionParser(ActionParserABC):
         )
 
     def get_user_input(self, args):
-        args.app_name = self.get_input(
+        args.app_name = self._get_input(
             default_value=args.app_name.value,
             message=f"Enter the name of the application (default: {ArgumentDefaultValueEnum.APP_NAME}): ",
         )
-        args.config_type = self.get_input(
+        args.config_type = self._get_input(
             default_value=args.config_type.value,
             message=f"Enter the config module type (default: {ArgumentDefaultValueEnum.CONFIG_TYPE}): ",
             choices=ConfigTypeEnum.get_values(),
         )
-        args.orm = self.get_input(
+        args.orm = self._get_input(
             default_value=args.orm.value,
             message=f"Enter the ORM (default: {ArgumentDefaultValueEnum.ORM}): ",
             choices=ORMEnum.get_values(),

@@ -43,9 +43,9 @@ class Cli:
         args = parser.parse_args()
 
         action = sys.argv[1]
-        if action == ActionEnum.init:
+        if action == ActionEnum.INIT:
             self.init_action_parser.get_user_input(args)
-        elif action == ActionEnum.extension:
+        elif action == ActionEnum.EXTENSION:
             self.extension_action_parser.get_user_input(args)
 
         args.func(args)

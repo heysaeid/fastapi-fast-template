@@ -27,7 +27,7 @@ class ActionParserABC(ABC):
     def get_user_input(self, args: Namespace) -> None:
         ...
 
-    def get_input(
+    def _get_input(
         self,
         default_value: str,
         message: str,
@@ -41,6 +41,6 @@ class ActionParserABC(ABC):
                 print(
                     f"Invalid choice: {input_value} (choose from {', '.join(choices)})"
                 )
-                return self.__get_input(default_value, message, choices)
+                self._get_input(default_value, message, choices)
             return input_value
         return default_value

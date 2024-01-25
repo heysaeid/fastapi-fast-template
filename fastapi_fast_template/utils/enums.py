@@ -27,54 +27,67 @@ class ORMEnum(EnumMixin, StrEnum):
     TORTOISE = "tortoise"
 
 
+class CachingBackendEnum(EnumMixin, StrEnum):
+    REDIS = "redis"
+
+
+class LoggingTypeEnum(EnumMixin, StrEnum):
+    INCOMING = "incoming"
+    APICALL = "apicall"
+    EXCEPTION = "exception"
+
+
 class ArgumentDefaultValueEnum(StrEnum):
     APP_NAME = "Fast Template"
     CONFIG_TYPE = ConfigTypeEnum.MULTIPLE
     ORM = ORMEnum.SQLALCHEMY
+    REDIS_BACKEND = CachingBackendEnum.REDIS
+    LOGGING_TYPE = LoggingTypeEnum.INCOMING
 
 
 class DirectoryEnum(StrEnum):
-    logs = "./logs"
-    tests = "./tests"
-    src = "./src"
-    src_routers = "./src/routers"
-    src_repositories = "./src/repositories"
-    src_services = "./src/services"
-    src_models = "./src/models"
-    src_schemas = "./src/schemas"
-    src_utils = "./src/utils"
-    src_tasks = "./src/tasks"
+    LOGS = "./logs"
+    TESTS = "./tests"
+    SRC = "./src"
+    SRC_ROUTERS = "./src/routers"
+    SRC_REPOSITORIES = "./src/repositories"
+    SRC_SERVICES = "./src/services"
+    SRC_MODELS = "./src/models"
+    SRC_SCHEMAS = "./src/schemas"
+    SRC_UTILS = "./src/utils"
+    SRC_TASKS = "./src/tasks"
 
 
 class FileEnum(StrEnum):
-    fast_template_init = ".fast_template.ini"
-    gitignore = ".gitignore"
-    env_sample = ".env.sample"
-    env = ".env"
-    pre_commit_config = ".pre-commit-config.yaml"
-    ruff_toml = "ruff.toml"
+    FAST_TEMPLATE_INIT = ".fast_template.ini"
+    GITIGNORE = ".gitignore"
+    ENV_SAMPLE = ".env.sample"
+    ENV = ".env"
+    PRE_COMMIT_CONFIG = ".pre-commit-config.yaml"
+    RUFF_TOML = "ruff.toml"
 
-    tests_conftest = "tests/conftest.py"
+    TESTS_CONFTEST = "tests/conftest.py"
 
-    src_config = "src/config.py"
-    src_app = "src/app.py"
-    src_main = "src/main.py"
-    src_database = "src/database.py"
-    src_repo_base = "src/repositories/base.py"
-    src_routers_init_ = "src/routers/__init__.py"
-    src_utils_lifespan = "src/utils/lifespan.py"
-    src_utils_caching = "src/utils/caching.py"
-    src_tasks_init_ = "src/tasks/__init__.py"
+    SRC_CONFIG = "src/config.py"
+    SRC_APP = "src/app.py"
+    SRC_MAIN = "src/main.py"
+    SRC_DATABASE = "src/database.py"
+    SRC_REPO_BASE = "src/repositories/base.py"
+    SRC_ROUTERS_INIT_ = "src/routers/__init__.py"
+    SRC_UTILS_LIFESPAN = "src/utils/lifespan.py"
+    SRC_UTILS_CACHING = "src/utils/caching.py"
+    SRC_TASKS_INIT_ = "src/tasks/__init__.py"
 
-    last_run_scheduler = ".last_run_scheduler.txt"
+    LAST_RUN_SCHEDULER = ".last_run_scheduler.txt"
 
 
 class ActionEnum(StrEnum):
-    init = "init"
-    extension = "extension"
+    INIT = "init"
+    EXTENSION = "extension"
 
 
 class ExtensionNameEnum(StrEnum):
-    babel = "babel"
-    scheduler = "scheduler"
-    caching = "caching"
+    BABEL = "babel"
+    SCHEDULER = "scheduler"
+    CACHING = "caching"
+    LOGGING = "logging"

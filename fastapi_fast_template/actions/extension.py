@@ -4,9 +4,12 @@ from argparse import ArgumentParser
 from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
 from fastapi_fast_template.content import ExtensionContent
 from fastapi_fast_template.utils.enums import (
+    ArgumentDefaultValueEnum,
+    CachingBackendEnum,
     DirectoryEnum,
     ExtensionNameEnum,
     FileEnum,
+    LoggingTypeEnum,
 )
 from fastapi_fast_template.utils.helpers import (
     FileBuilder,
@@ -20,12 +23,14 @@ from fastapi_fast_template.utils.helpers import (
 
 class ExtensionAction(ActionABC):
     def perform_action(self, args: ArgumentParser):
-        if args.name == ExtensionNameEnum.babel:
+        if args.name == ExtensionNameEnum.BABEL:
             self.babel(args)
-        elif args.name == ExtensionNameEnum.scheduler:
+        elif args.name == ExtensionNameEnum.SCHEDULER:
             self.scheduler(args)
-        elif args.name == ExtensionNameEnum.caching:
+        elif args.name == ExtensionNameEnum.CACHING:
             self.caching(args)
+        elif args.name == ExtensionNameEnum.LOGGING:
+            self.logging(args)
 
     def babel(self, args: ArgumentParser) -> None:
         ext_content = ExtensionContent(args)
@@ -44,91 +49,119 @@ class ExtensionAction(ActionABC):
 
         os.system("pybabel compile -d translations")
         add_line_to_last_import(
-            FileEnum.src_app, ext_content.get_babel_import_in_app()
+            FileEnum.SRC_APP, ext_content.get_babel_import_in_app()
         )
         add_new_line(
-            file_path=FileEnum.src_app,
+            file_path=FileEnum.SRC_APP,
             search_value="return app",
             new_line=ext_content.get_babel_in_app(lang=args.lang),
         )
         add_new_line(
-            file_path=FileEnum.fast_template_init,
+            file_path=FileEnum.FAST_TEMPLATE_INIT,
             search_value="babel",
             remove_matched=True,
             new_line=ext_content.get_babel_in_fast_template_init(),
         )
 
     def scheduler(self, args: ArgumentParser) -> None:
-        if check_extension_exists(ExtensionNameEnum.scheduler):
+        if check_extension_exists(ExtensionNameEnum.SCHEDULER):
             print("You have already added the scheduler")
             return
 
         ext_content = ExtensionContent(args)
-        create_directory(DirectoryEnum.src_tasks)
+        create_directory(DirectoryEnum.SRC_TASKS)
         FileBuilder(
-            file=FileEnum.src_tasks_init_,
+            file=FileEnum.SRC_TASKS_INIT_,
             build_function=ext_content.get_scheduler_init,
         ).build()
         add_new_line(
-            file_path=FileEnum.fast_template_init,
+            file_path=FileEnum.FAST_TEMPLATE_INIT,
             search_value="scheduler",
             remove_matched=True,
             new_line=ext_content.get_scheduler_in_fast_template_init(),
         )
         add_text_to_obj_end(
-            file_path=FileEnum.src_config,
+            file_path=FileEnum.SRC_CONFIG,
             class_name="Settings",
             text_to_add=ext_content.get_scheduler_in_setting(),
         )
         add_line_to_last_import(
-            FileEnum.src_utils_lifespan,
+            FileEnum.SRC_UTILS_LIFESPAN,
             new_line=ext_content.get_scheduler_in_lifespan_import(),
         )
         add_text_to_obj_end(
-            FileEnum.src_utils_lifespan,
+            FileEnum.SRC_UTILS_LIFESPAN,
             async_function_name="start_application",
             text_to_add=ext_content.get_scheduler_in_lifespan_start_application(),
         )
         add_text_to_obj_end(
-            FileEnum.src_utils_lifespan,
+            FileEnum.SRC_UTILS_LIFESPAN,
             async_function_name="down_application",
             text_to_add=ext_content.get_scheduler_in_lifespan_down_application(),
         )
 
     def caching(self, args: ArgumentParser) -> None:
-        if check_extension_exists(ExtensionNameEnum.caching):
+        if check_extension_exists(ExtensionNameEnum.CACHING):
             print("You have already added the caching")
             return
 
         ext_content = ExtensionContent(args)
         FileBuilder(
-            file=FileEnum.src_utils_caching,
+            file=FileEnum.SRC_UTILS_CACHING,
             build_function=ext_content.get_caching_in_caching,
         ).build()
         add_new_line(
-            file_path=FileEnum.fast_template_init,
+            file_path=FileEnum.FAST_TEMPLATE_INIT,
             search_value="caching",
             remove_matched=True,
             new_line=ext_content.get_caching_in_fast_template_init(),
         )
         add_text_to_obj_end(
-            file_path=FileEnum.src_config,
+            file_path=FileEnum.SRC_CONFIG,
             class_name="Settings",
             text_to_add=ext_content.get_caching_in_setting(),
         )
         add_line_to_last_import(
-            FileEnum.src_utils_lifespan,
+            FileEnum.SRC_UTILS_LIFESPAN,
             new_line=ext_content.get_caching_in_lifespan_import(),
         )
         add_text_to_obj_end(
-            FileEnum.src_utils_lifespan,
+            FileEnum.SRC_UTILS_LIFESPAN,
             async_function_name="start_application",
             text_to_add=ext_content.get_caching_in_lifespan_start_application(),
         )
         add_text_to_obj_end(
-            FileEnum.src_utils_lifespan,
+            FileEnum.SRC_UTILS_LIFESPAN,
             async_function_name="down_application",
             text_to_add=ext_content.get_caching_in_lifespan_down_application(),
+        )
+
+    def logging(self, args: ArgumentParser) -> None:
+        if check_extension_exists(f"{args.logging_type}_log"):
+            print(f"You have already added the {args.logging_type}")
+            return
+        ext_content = ExtensionContent(args)
+        os.system("pip install fastapi-and-logging")
+        add_new_line(
+            file_path=FileEnum.FAST_TEMPLATE_INIT,
+            search_value="caching",
+            remove_matched=True,
+            new_line=ext_content.get_logging_in_fast_template_init(
+                type=args.logging_type,
+            ),
+        )
+        add_new_line(
+            file_path=FileEnum.SRC_APP,
+            search_value="return app",
+            new_line=ext_content.get_logging_class_in_app(
+                type=args.logging_type,
+            ),
+        )
+        add_line_to_last_import(
+            FileEnum.SRC_APP,
+            new_line=ext_content.get_logging_import_in_app(
+                type=args.logging_type,
+            ),
         )
 
 
@@ -155,18 +188,31 @@ class ExtensionActionParser(ActionParserABC):
         sub_parser.add_argument(
             "-b",
             "--backend",
-            default="redis",
+            default=ArgumentDefaultValueEnum.REDIS_BACKEND,
             help="Backend Name",
+        )
+        sub_parser.add_argument(
+            "-lt",
+            "--logging_type",
+            default=ArgumentDefaultValueEnum.LOGGING_TYPE,
+            help="Type Name",
         )
 
     def get_user_input(self, args):
-        if args.name == ExtensionNameEnum.babel:
-            args.lang = self.get_input(
+        if args.name == ExtensionNameEnum.BABEL:
+            args.lang = self._get_input(
                 default_value=args.lang,
                 message="Please select the default language (default: en): ",
             )
-        elif args.name == ExtensionNameEnum.caching:
-            args.backend = self.get_input(
+        elif args.name == ExtensionNameEnum.CACHING:
+            args.backend = self._get_input(
                 default_value=args.backend,
-                message="Please select the backend (default: redis): ",
+                message=f"Please select the backend (default: {ArgumentDefaultValueEnum.REDIS_BACKEND}): ",
+                choices=CachingBackendEnum.get_values(),
+            )
+        elif args.name == ExtensionNameEnum.LOGGING:
+            args.logging_type = self._get_input(
+                default_value=args.logging_type,
+                message=f"Please select the log type (default: {ArgumentDefaultValueEnum.LOGGING_TYPE}): ",
+                choices=LoggingTypeEnum.get_values(),
             )
