@@ -50,6 +50,7 @@ dependencies = [
     "ruff",
     "pre-commit",
     "termcolor",
+    "StrEnum",
 ]
 dynamic = ["version"]
 
