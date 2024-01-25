@@ -33,11 +33,12 @@ class ExtensionAction(ActionABC):
             self.logging(args)
 
     def babel(self, args: ArgumentParser) -> None:
+        os.system("pip install fastapi-and-babel")
+
         ext_content = ExtensionContent(args)
         FileBuilder(
             file="./babel.cfg", build_function=ext_content.get_babel_cfg
         ).build()
-        os.system("pip install fastapi-and-babel")
 
         if not os.path.exists("./messages.pot"):
             os.system("pybabel extract -F babel.cfg -o messages.pot .")
@@ -68,7 +69,9 @@ class ExtensionAction(ActionABC):
             print("You have already added the scheduler")
             return
 
+        os.system("pip install APScheduler")
         ext_content = ExtensionContent(args)
+
         create_directory(DirectoryEnum.SRC_TASKS)
         FileBuilder(
             file=FileEnum.SRC_TASKS_INIT_,
@@ -105,7 +108,9 @@ class ExtensionAction(ActionABC):
             print("You have already added the caching")
             return
 
+        os.system("pip install fastapi-and-caching")
         ext_content = ExtensionContent(args)
+
         FileBuilder(
             file=FileEnum.SRC_UTILS_CACHING,
             build_function=ext_content.get_caching_in_caching,
@@ -140,8 +145,10 @@ class ExtensionAction(ActionABC):
         if check_extension_exists(f"{args.logging_type}_log"):
             print(f"You have already added the {args.logging_type}")
             return
-        ext_content = ExtensionContent(args)
+
         os.system("pip install fastapi-and-logging")
+        ext_content = ExtensionContent(args)
+
         add_new_line(
             file_path=FileEnum.FAST_TEMPLATE_INIT,
             search_value="caching",
