@@ -125,6 +125,7 @@ def root():
 
 For more information, [click here](https://github.com/heysaeid/fastapi-and-caching).
 
+<hr>
 
 ### FastAPI-And-Logging
 You can add logging to your project as follows.
@@ -135,3 +136,25 @@ Please select the log type (default: incoming): (choose from incoming, apicall, 
 You can now check out the app.py module and apply your changes to it.
 
 For more information, [click here](https://github.com/heysaeid/fastapi-and-logging).
+
+
+## Documents
+You can have direct access to the documentation of each library used by using the following command.
+```shell
+fast doc
+
+
+        Quick access to the documents of the tools used in this template.
+        ___________________________________
+
+        👉 FastAPI                            https://fastapi.tiangolo.com
+        👉 SQLAlchemy                         https://www.sqlalchemy.org
+        👉 Tortoise ORM                       https://tortoise.github.io
+        👉 FastAPI-And-Babel                  https://github.com/heysaeid/fastapi-and-babel
+        👉 FastAPI-And-Logging                https://github.com/heysaeid/fastapi-and-logging
+        👉 FastAPI-And-Caching                https://github.com/heysaeid/fastapi-and-caching
+        👉 APScheduler                        https://fastapi.tiangolo.com
+        And ...
+        ___________________________________
+
+```
