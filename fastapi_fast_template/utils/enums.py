@@ -37,12 +37,21 @@ class LoggingTypeEnum(EnumMixin, StrEnum):
     EXCEPTION = "exception"
 
 
+class StreamBrokerEnum(EnumMixin, StrEnum):
+    REDIS = "redis"
+    AIOKAFKA = "aiokafka"
+    CONFLUENT = "confluent"
+    RABBIT = "rabbit"
+    NATS = "nats"
+
+
 class ArgumentDefaultValueEnum(StrEnum):
     APP_NAME = "Fast Template"
     CONFIG_TYPE = ConfigTypeEnum.MULTIPLE
     ORM = ORMEnum.SQLALCHEMY
     REDIS_BACKEND = CachingBackendEnum.REDIS
     LOGGING_TYPE = LoggingTypeEnum.INCOMING
+    STREAM_BROKER = StreamBrokerEnum.REDIS
 
 
 class DirectoryEnum(StrEnum):
@@ -91,3 +100,4 @@ class ExtensionNameEnum(StrEnum):
     SCHEDULER = "scheduler"
     CACHING = "caching"
     LOGGING = "logging"
+    STREAM = "stream"

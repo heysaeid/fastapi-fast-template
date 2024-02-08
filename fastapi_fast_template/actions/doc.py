@@ -43,6 +43,9 @@ class DocAction(ActionABC):
         print(
             f"\t👉 APScheduler                        {self.get_url('https://fastapi.tiangolo.com')}"
         )
+        print(
+            f"\t👉 FastStream                         {self.get_url('https://faststream.airt.ai')}"
+        )
         print("\t___________________________________\n")
 
     def get_url(self, url: str) -> str:

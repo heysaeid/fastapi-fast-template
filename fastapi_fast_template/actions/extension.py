@@ -10,6 +10,7 @@ from fastapi_fast_template.utils.enums import (
     ExtensionNameEnum,
     FileEnum,
     LoggingTypeEnum,
+    StreamBrokerEnum,
 )
 from fastapi_fast_template.utils.helpers import (
     FileBuilder,
@@ -31,6 +32,8 @@ class ExtensionAction(ActionABC):
             self.caching(args)
         elif args.name == ExtensionNameEnum.LOGGING:
             self.logging(args)
+        elif args.name == ExtensionNameEnum.STREAM:
+            self.stream(args)
 
     def babel(self, args: ArgumentParser) -> None:
         os.system("pip install fastapi-and-babel")
@@ -171,6 +174,20 @@ class ExtensionAction(ActionABC):
             ),
         )
 
+    def stream(self, args: ArgumentParser) -> None:
+        if check_extension_exists(ExtensionNameEnum.STREAM):
+            print(f"You have already added the {args.broker}")
+            return
+
+        stream_brokers = {
+            StreamBrokerEnum.AIOKAFKA: "kafka",
+            StreamBrokerEnum.CONFLUENT: "kafka",
+            StreamBrokerEnum.REDIS: "redis",
+            StreamBrokerEnum.RABBIT: "rabbit",
+            StreamBrokerEnum.NATS: "nats",
+        }
+        os.system(f"pip install faststream[{stream_brokers[args.broker]}]")
+
 
 class ExtensionActionParser(ActionParserABC):
     def parser(self):
@@ -204,6 +221,12 @@ class ExtensionActionParser(ActionParserABC):
             default=ArgumentDefaultValueEnum.LOGGING_TYPE,
             help="Type Name",
         )
+        sub_parser.add_argument(
+            "-b",
+            "--broker",
+            default=ArgumentDefaultValueEnum.STREAM_BROKER,
+            help="Broker Name",
+        )
 
     def get_user_input(self, args):
         if args.name == ExtensionNameEnum.BABEL:
@@ -222,4 +245,10 @@ class ExtensionActionParser(ActionParserABC):
                 default_value=args.logging_type,
                 message=f"Please select the log type (default: {ArgumentDefaultValueEnum.LOGGING_TYPE}): ",
                 choices=LoggingTypeEnum.get_values(),
+            )
+        elif args.name == ExtensionNameEnum.STREAM:
+            args.broker = self._get_input(
+                default_value=args.broker,
+                message=f"Please select the broker (default: {ArgumentDefaultValueEnum.STREAM_BROKER}): ",
+                choices=StreamBrokerEnum.get_values(),
             )
