@@ -81,6 +81,7 @@ class FileEnum(StrEnum):
     SRC_APP = "src/app.py"
     SRC_MAIN = "src/main.py"
     SRC_DATABASE = "src/database.py"
+    SRC_STREAM = "src/stream.py"
     SRC_REPO_BASE = "src/repositories/base.py"
     SRC_ROUTERS_INIT_ = "src/routers/__init__.py"
     SRC_UTILS_LIFESPAN = "src/utils/lifespan.py"

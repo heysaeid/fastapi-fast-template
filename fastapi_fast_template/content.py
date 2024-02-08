@@ -6,6 +6,7 @@ from fastapi_fast_template.utils.enums import (
     ConfigTypeEnum,
     LoggingTypeEnum,
     ORMEnum,
+    StreamBrokerEnum,
 )
 from fastapi_fast_template.utils.helpers import get_app_config
 
@@ -21,9 +22,11 @@ class BaseContent:
                 self.app_config.get("scheduler", "False") == "True"
             )
             self.caching = self.app_config.get("caching", "redis")
+            self.stream = self.app_config.get("stream", "redis")
         else:
             self.config_type = args.config_type
             self.orm = args.orm
+            self.stream = "redis"
             self.scheduler = False
             self.caching = "redis"
 
@@ -221,3 +224,46 @@ class ExtensionContent(BaseContent):
             LoggingTypeEnum.EXCEPTION: "\tHTTPXLogger()",
         }
         return logging_type[type]
+
+    def get_stream_in_fast_template_init(self) -> str:
+        return f"\nstream={self.stream}"
+
+    def get_stream_in_config(self) -> str:
+        stream_brokers = {
+            StreamBrokerEnum.AIOKAFKA: '\nbroker_url: str = "localhost:9092"',
+            StreamBrokerEnum.CONFLUENT: '\nbroker_url: str = "localhost:9092"',
+            StreamBrokerEnum.RABBIT: '\nbroker_url: str = "amqp://guest:guest@localhost:5672/"',
+            StreamBrokerEnum.REDIS: '\nbroker_url: str = "redis://localhost:6379"',
+            StreamBrokerEnum.NATS: '\nbroker_url: str = "nats://localhost:4222"',
+        }
+        return stream_brokers[self.stream]
+
+    def get_stream_in_stream(self) -> str:
+        stream_brokers = {
+            StreamBrokerEnum.AIOKAFKA: {
+                "import_faststream_broker": "from faststream.kafka import KafkaBroker",
+                "faststream_broker": "KafkaBroker",
+            },
+            StreamBrokerEnum.CONFLUENT: {
+                "import_faststream_broker": "from faststream.confluent import KafkaBroker",
+                "faststream_broker": "KafkaBroker",
+            },
+            StreamBrokerEnum.RABBIT: {
+                "import_faststream_broker": "from faststream.rabbit import RabbitBroker",
+                "faststream_broker": "RabbitBroker",
+            },
+            StreamBrokerEnum.REDIS: {
+                "import_faststream_broker": "from faststream.redis import RedisBroker",
+                "faststream_broker": "RedisBroker",
+            },
+            StreamBrokerEnum.NATS: {
+                "import_faststream_broker": "from faststream.nats import NatsBroker",
+                "faststream_broker": "NatsBroker",
+            },
+        }
+        return (self.get_file_content("main/stream.py")).format(
+            **stream_brokers[self.stream]
+        )
+
+    def get_stream_in_lifespan(self) -> str:
+        return "\n\n" + self.get_file_content("utils/stream_lifespan.py")

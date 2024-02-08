@@ -188,6 +188,27 @@ class ExtensionAction(ActionABC):
         }
         os.system(f"pip install faststream[{stream_brokers[args.broker]}]")
 
+        ext_content = ExtensionContent(args)
+        FileBuilder(
+            file=FileEnum.SRC_STREAM,
+            build_function=ext_content.get_stream_in_stream,
+        ).build()
+        add_new_line(
+            file_path=FileEnum.FAST_TEMPLATE_INIT,
+            search_value="stream",
+            remove_matched=True,
+            new_line=ext_content.get_stream_in_fast_template_init(),
+        )
+        add_text_to_obj_end(
+            file_path=FileEnum.SRC_CONFIG,
+            class_name="Settings",
+            text_to_add=ext_content.get_stream_in_config(),
+        )
+        add_new_line(
+            file_path=FileEnum.SRC_UTILS_LIFESPAN,
+            new_line=ext_content.get_stream_in_lifespan(),
+        )
+
 
 class ExtensionActionParser(ActionParserABC):
     def parser(self):
@@ -222,7 +243,7 @@ class ExtensionActionParser(ActionParserABC):
             help="Type Name",
         )
         sub_parser.add_argument(
-            "-b",
+            "-sb",
             "--broker",
             default=ArgumentDefaultValueEnum.STREAM_BROKER,
             help="Broker Name",
