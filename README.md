@@ -10,6 +10,8 @@ This library helps you not get involved in the complexities of FastAPI and its l
 - [fastapi-and-caching](https://github.com/heysaeid/fastapi-and-caching) - FastAPI and Caching is an extension for FastAPI that provides support for various caching mechanisms, allowing you to easily leverage caching within your FastAPI applications.
 - [fastapi-and-babel](https://github.com/heysaeid/fastapi-and-babel.git) - FastAPIAndBabel allows you to easily use babel in your FastAPI projects and offers some features to improve and ease things.
 - [APScheduler](https://apscheduler.readthedocs.io/en/3.x/) Advanced Python Scheduler (APScheduler) is a Python library that lets you schedule your Python code to be executed later, either just once or periodically.
+- [FastStream](https://faststream.airt.ai/latest/) - the simplest way to work with a messaging queues
+
 
 
 ## Install
@@ -137,6 +139,22 @@ You can now check out the app.py module and apply your changes to it.
 
 For more information, [click here](https://github.com/heysaeid/fastapi-and-logging).
 
+<hr>
+
+### FastStream
+You can add broker to your project as follows.
+```
+fast extension --name stream
+Please select the broker (default: redis): (choose from redis, aiokafka, confluent, rabbit, nats)
+```
+You can run it with the following command
+‍‍‍‍‍
+```shell
+faststream run src.stream:app
+```
+
+For more information, [click here](https://github.com/airtai/faststream).
+
 
 ## Documents
 You can have direct access to the documentation of each library used by using the following command.
@@ -154,6 +172,7 @@ fast doc
         👉 FastAPI-And-Logging                https://github.com/heysaeid/fastapi-and-logging
         👉 FastAPI-And-Caching                https://github.com/heysaeid/fastapi-and-caching
         👉 APScheduler                        https://fastapi.tiangolo.com
+        👉 FastStream                         https://faststream.airt.ai
         And ...
         ___________________________________
 
