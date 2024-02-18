@@ -51,8 +51,7 @@ class RootContent(BaseContent):
     def get_fast_template_ini(self) -> str:
         return f"""[app]
 config_type={self.config_type}
-orm={self.orm}
-"""
+orm={self.orm}"""
 
     def get_gitignore(self) -> str:
         return self.get_file_content(
