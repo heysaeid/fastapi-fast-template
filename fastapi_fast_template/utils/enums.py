@@ -27,6 +27,10 @@ class ORMEnum(EnumMixin, StrEnum):
     TORTOISE = "tortoise"
 
 
+class ODMEnum(EnumMixin, StrEnum):
+    BEANIE = "beanie"
+
+
 class CachingBackendEnum(EnumMixin, StrEnum):
     REDIS = "redis"
 
@@ -48,7 +52,7 @@ class StreamBrokerEnum(EnumMixin, StrEnum):
 class ArgumentDefaultValueEnum(StrEnum):
     APP_NAME = "Fast Template"
     CONFIG_TYPE = ConfigTypeEnum.MULTIPLE
-    ORM = ORMEnum.SQLALCHEMY
+    ORM_ODM = ORMEnum.SQLALCHEMY
     REDIS_BACKEND = CachingBackendEnum.REDIS
     LOGGING_TYPE = LoggingTypeEnum.INCOMING
     STREAM_BROKER = StreamBrokerEnum.REDIS

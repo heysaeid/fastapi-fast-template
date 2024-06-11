@@ -10,6 +10,7 @@ from fastapi_fast_template.utils.enums import (
     ConfigTypeEnum,
     DirectoryEnum,
     FileEnum,
+    ODMEnum,
     ORMEnum,
 )
 from fastapi_fast_template.utils.helpers import FileBuilder, create_directory
@@ -140,11 +141,11 @@ class InitActionParser(ActionParserABC):
             help="Type config module",
         )
         sub_parser.add_argument(
-            "-orm",
-            "--orm",
-            default=ArgumentDefaultValueEnum.ORM,
+            "-orm_odm",
+            "--orm_odm",
+            default=ArgumentDefaultValueEnum.ORM_ODM,
             choices=ORMEnum.get_values(),
-            help="ORM",
+            help="ORM - ODM",
         )
 
     def get_user_input(self, args):
@@ -157,8 +158,8 @@ class InitActionParser(ActionParserABC):
             message=f"Enter the config module type (default: {ArgumentDefaultValueEnum.CONFIG_TYPE}): ",
             choices=ConfigTypeEnum.get_values(),
         )
-        args.orm = self._get_input(
-            default_value=args.orm.value,
-            message=f"Enter the ORM (default: {ArgumentDefaultValueEnum.ORM}): ",
-            choices=ORMEnum.get_values(),
+        args.orm_odm = self._get_input(
+            default_value=args.orm_odm.value,
+            message=f"Enter the ORM/ODM (default: {ArgumentDefaultValueEnum.ORM_ODM}): ",
+            choices=ORMEnum.get_values() + ODMEnum.get_values(),
         )

@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi_fast_template.utils.enums import (
     ConfigTypeEnum,
     LoggingTypeEnum,
+    ODMEnum,
     ORMEnum,
     StreamBrokerEnum,
 )
@@ -17,7 +18,7 @@ class BaseContent:
 
         if self.app_config:
             self.config_type = self.app_config["config_type"]
-            self.orm = self.app_config["orm"]
+            self.orm_odm = self.app_config["orm_odm"]
             self.scheduler = (
                 self.app_config.get("scheduler", "False") == "True"
             )
@@ -25,7 +26,7 @@ class BaseContent:
             self.stream = self.app_config.get("stream", "redis")
         else:
             self.config_type = args.config_type
-            self.orm = args.orm
+            self.orm_odm = args.orm_odm
             self.stream = "redis"
             self.scheduler = False
             self.caching = "redis"
@@ -51,7 +52,7 @@ class RootContent(BaseContent):
     def get_fast_template_ini(self) -> str:
         return f"""[app]
 config_type={self.config_type}
-orm={self.orm}"""
+orm_odm={self.orm_odm}"""
 
     def get_gitignore(self) -> str:
         return self.get_file_content(
@@ -61,7 +62,7 @@ orm={self.orm}"""
     def get_env_sample(self) -> str:
         return self.get_file_content(
             "envs/.env.sample",
-            db_env=self.get_db_env_sample(self.orm),
+            db_env=self.get_db_env_sample(self.orm_odm),
         )
 
     def get_db_env_sample(self, orm: ORMEnum) -> str:
@@ -90,15 +91,16 @@ class SrcContent(BaseContent):
         return self.get_file_content(
             config_types[self.config_type],
             app_name=app_name,
-            db_config=self.get_db_config(self.orm),
+            db_config=self.get_db_config(self.orm_odm),
         )
 
-    def get_db_config(self, orm: ORMEnum) -> str:
+    def get_db_config(self, orm_odm: ORMEnum | ODMEnum) -> str:
         config = {
             ORMEnum.SQLALCHEMY: 'sqlalchemy_db_url: str = "postgresql+asyncpg://postgres:1234@localhost:5432/testdb"',
             ORMEnum.TORTOISE: 'tortoise_db_url: str = "postgres://postgres:1234@localhost:5432/testdb"',
+            ODMEnum.BEANIE: 'mongo_connection: MongoDsn = "mongodb://localhost:27017/fast"',
         }
-        return config[orm]
+        return config[orm_odm]
 
     def get_app(self) -> str:
         return self.get_file_content(
@@ -114,9 +116,10 @@ class SrcContent(BaseContent):
         config_types = {
             ORMEnum.SQLALCHEMY: "orm/sqlalchemy.py",
             ORMEnum.TORTOISE: "orm/tortoise.py",
+            ODMEnum.BEANIE: "odm/beanie.py",
         }
         return self.get_file_content(
-            config_types[self.orm],
+            config_types[self.orm_odm],
         )
 
     def get_repository(self) -> str:
@@ -125,7 +128,7 @@ class SrcContent(BaseContent):
             ORMEnum.TORTOISE: "repositories/tortoise/base.py",
         }
         return self.get_file_content(
-            repository[self.orm],
+            repository[self.orm_odm],
         )
 
     def get_lifespan(self) -> str:
@@ -133,7 +136,7 @@ class SrcContent(BaseContent):
         down_application_content = "..."
         import_content = ""
 
-        if self.orm == ORMEnum.TORTOISE:
+        if self.orm_odm == ORMEnum.TORTOISE:
             start_application_content = "await init_db()"
             down_application_content = "await close_db()"
             import_content += "from database import init_db, close_db"
