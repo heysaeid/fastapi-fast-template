@@ -1,14 +1,13 @@
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 
 from pydantic.types import PositiveInt
-from tortoise.queryset import Q
 
 ModelType = TypeVar("ModelType")
 
 
 class BaseRepository(Generic[ModelType]):
     """
-    Generic base repository class for working with TORTOISE models.
+    Generic base repository class for working with Beanie models.
 
     This class provides a set of methods for creating, reading, updating, and deleting models.
     It is designed to be subclassed by specific repository implementations.
@@ -17,22 +16,22 @@ class BaseRepository(Generic[ModelType]):
     model_class: ModelType
 
     def __str__(self):
-        return f"{self.__class__.__name__}(id={self.id})"
+        return f"{self.__class__.__name__}(model_class={self.model_class.__name__})"
 
-    async def get_by_id(self, id: PositiveInt) -> ModelType | None:
+    async def get_by_id(self, id: str) -> Optional[ModelType]:
         """
         Retrieves a single record of the associated model by its unique identifier.
 
         :param id: The unique identifier of the record to retrieve.
-        :type id: PositiveInt
+        :type id: str
 
         :return: An instance of the model if found, or None if no record with the specified ID exists.
-        :rtype: ModelType | None
+        :rtype: ModelType
 
         Example usage:
         ```
         # Retrieve a record by ID
-        record_id = 1
+        record_id = 1c417e73-3133-47a9-9aeb-cd0ef835f2e1
         result = await base_repo.get_by_id(record_id)
         if result:
             print(f"Record found: {result}")
@@ -40,13 +39,10 @@ class BaseRepository(Generic[ModelType]):
             print("Record not found.")
         ```
         """
-
-        return await self.model_class.get_or_none(pk=id)
+        return await self.model_class.get(id)
 
     async def get_all(
-        self,
-        skip: PositiveInt = 0,
-        limit: PositiveInt = 100,
+        self, skip: PositiveInt = 0, limit: PositiveInt = 100
     ) -> list[ModelType]:
         """
         Retrieves a specified range of records of the associated model.
@@ -70,34 +66,12 @@ class BaseRepository(Generic[ModelType]):
             print(record)
         ```
         """
-        return await self.model_class.all().offset(skip).limit(limit)
+        return (
+            await self.model_class.find_all().skip(skip).limit(limit).to_list()
+        )
 
-    async def filter_by(self, q_filters: Q = Q(), **kwargs) -> list[ModelType]:
-        """
-        Filters records of the associated model based on provided filters and keyword arguments.
-
-        :param q_filters: A Tortoise Q object representing additional filters.
-                        Defaults to an empty Q(), meaning no additional filters.
-        :type q_filters: Q
-
-        :param kwargs: Additional filters provided as keyword arguments.
-                    These are applied using the standard filter syntax of Tortoise ORM.
-        :type kwargs: Any
-
-        :return: A list of model instances that satisfy the specified filters.
-        :rtype: list[ModelType]
-
-        Example usage:
-        ```
-        # Filter by Q objects and additional keyword filters
-        q_filters = [Q(name__icontains='John'), Q(age__gte=25)]
-        results = await base_repo.filter_by(q_filters=q_filters, city='New York')
-
-        # Filter without using Q objects
-        results = await base_repo.filter_by(city='New York', is_active=True)
-        ```
-        """
-        return await self.model_class.filter(q_filters, **kwargs)
+    async def filter_by(self, **kwargs) -> list[ModelType]:
+        return await self.model_class.find(kwargs).to_list()
 
     async def save(self, entity: ModelType) -> ModelType:
         """
@@ -112,7 +86,7 @@ class BaseRepository(Generic[ModelType]):
         await entity.save()
         return entity
 
-    async def create(self, entity: ModelType = None, **kwargs) -> ModelType:
+    async def create(self, entity: ModelType) -> ModelType:
         """
         Creates a new record of the associated model, optionally initializing it with provided data.
 
@@ -139,13 +113,10 @@ class BaseRepository(Generic[ModelType]):
         print(f"New record created: {created_record}")
         ```
         """
-        if entity is None:
-            entity = self.model_class(**kwargs)
-
-        await self.save(entity)
+        await entity.insert()
         return entity
 
-    async def update(self, entity: ModelType, **kwargs) -> ModelType:
+    async def update(self, id: str, update_data: dict) -> Optional[ModelType]:
         """
         Updates the specified model instance with the provided data and persists the changes.
 
@@ -161,17 +132,17 @@ class BaseRepository(Generic[ModelType]):
         Example usage:
         ```
         # Retrieve a record by ID and update it
-        record_id = 1
+        record_id = 1c417e73-3133-47a9-9aeb-cd0ef835f2e1
         existing_record = await base_repo.get_by_id(record_id)
         updated_record = await base_repo.update(existing_record, age=31, city='San Francisco')
         print(f"Record updated: {updated_record}")
         ```
         """
-        for key, value in kwargs.items():
-            setattr(entity, key, value)
-
-        await self.save(entity)
-        return entity
+        obj = await self.get_by_id(id)
+        if obj:
+            await obj.update({"$set": update_data})
+            return obj
+        return None
 
     async def delete(self, entity: ModelType) -> None:
         """
@@ -183,7 +154,7 @@ class BaseRepository(Generic[ModelType]):
         Example usage:
         ```
         # Retrieve a record by ID and delete it
-        record_id = 1
+        record_id = 1c417e73-3133-47a9-9aeb-cd0ef835f2e1
         existing_record = await base_repo.get_by_id(record_id)
         await base_repo.delete(existing_record)
         print("Record deleted.")
@@ -191,7 +162,7 @@ class BaseRepository(Generic[ModelType]):
         """
         await entity.delete()
 
-    async def delete_by_id(self, id: PositiveInt) -> None:
+    async def delete_by_id(self, id: str) -> None:
         """
         Deletes a record of the associated model by its unique identifier.
 
@@ -201,14 +172,16 @@ class BaseRepository(Generic[ModelType]):
         Example usage:
         ```
         # Delete a record by ID
-        record_id = 1
+        record_id = 1c417e73-3133-47a9-9aeb-cd0ef835f2e1
         await base_repo.delete_by_id(record_id)
         print("Record deleted.")
         ```
         """
-        await self.model_class.get_or_none(pk=id).delete()
+        entity = await self.model_class.get(id)
+        if entity:
+            await entity.delete()
 
-    async def exists(self, id: PositiveInt) -> bool:
+    async def exists(self, id: str) -> bool:
         """
         Checks if a record with the specified unique identifier exists in the associated data storage.
 
@@ -220,17 +193,17 @@ class BaseRepository(Generic[ModelType]):
 
         Example usage:
         ```
-        # Check if a record with ID 1 exists
-        record_id = 1
+        # Check if a record with ID 1c417e73-3133-47a9-9aeb-cd0ef835f2e1 exists
+        record_id = 1c417e73-3133-47a9-9aeb-cd0ef835f2e1
         if await base_repo.exists(record_id):
             print("Record exists.")
         else:
             print("Record does not exist.")
         ```
         """
-        return await self.model_class.filter(pk=id).exists()
+        return await self.model_class.find_one({"_id": id}) is not None
 
-    async def count(self) -> PositiveInt:
+    async def count(self) -> int:
         """
         Retrieves the total number of records in the associated data storage.
 
@@ -244,7 +217,7 @@ class BaseRepository(Generic[ModelType]):
         print(f"Total records: {total_records}")
         ```
         """
-        return await self.model_class.all().count()
+        return await self.model_class.find_all().count()
 
     async def bulk_create(self, entities: list[ModelType]) -> list[ModelType]:
         """
@@ -267,7 +240,7 @@ class BaseRepository(Generic[ModelType]):
         print(f"{len(created_records)} records created in bulk.")
         ```
         """
-        await self.model_class.bulk_create(entities)
+        await self.model_class.insert_many(entities)
         return entities
 
     async def bulk_update(self, entities: list[ModelType]) -> list[ModelType]:
@@ -291,7 +264,8 @@ class BaseRepository(Generic[ModelType]):
         print(f"{len(updated_records)} records updated in bulk.")
         ```
         """
-        await self.model_class.bulk_update(entities)
+        for entity in entities:
+            await entity.save()
         return entities
 
     async def bulk_delete(self, entities: list[ModelType]) -> None:

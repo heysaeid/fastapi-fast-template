@@ -65,12 +65,13 @@ orm_odm={self.orm_odm}"""
             db_env=self.get_db_env_sample(self.orm_odm),
         )
 
-    def get_db_env_sample(self, orm: ORMEnum) -> str:
+    def get_db_env_sample(self, orm_odm: ORMEnum | ODMEnum) -> str:
         config = {
             ORMEnum.SQLALCHEMY: "\nSQLALCHEMY_DB_URL=",
             ORMEnum.TORTOISE: "\nTORTOISE_CONFIG_FILE=",
+            ODMEnum.BEANIE: "\nBEANIE_DB_URL=",
         }
-        return config[orm]
+        return config[orm_odm]
 
     def get_conftest(self) -> str:
         return self.get_file_content("tests/conftest.py")
@@ -126,6 +127,7 @@ class SrcContent(BaseContent):
         repository = {
             ORMEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
             ORMEnum.TORTOISE: "repositories/tortoise/base.py",
+            ODMEnum.BEANIE: "repositories/beanie/base.py",
         }
         return self.get_file_content(
             repository[self.orm_odm],
