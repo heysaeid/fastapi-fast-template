@@ -32,6 +32,9 @@ class DocAction(ActionABC):
             f"\t👉 Tortoise ORM                       {self.get_url('https://tortoise.github.io')}"
         )
         print(
+            f"\t👉 Beanie ODM                         {self.get_url('https://beanie-odm.dev')}"
+        )
+        print(
             f"\t👉 FastAPI-And-Babel                  {self.get_url('https://github.com/heysaeid/fastapi-and-babel')}"
         )
         print(

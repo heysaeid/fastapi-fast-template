@@ -6,6 +6,9 @@ This library helps you not get involved in the complexities of FastAPI and its l
 - Proper structure and ready
 - [Ruff](https://github.com/astral-sh/ruff) - An extremely fast Python linter and code formatter, written in Rust.
 - [pre-commit](https://pre-commit.com/) - A framework for managing and maintaining multi-language pre-commit hooks.
+- [SQLAlchemy](https://sqlalchemy.org/) - SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL
+- [Tortoise ORM](https://tortoise.github.io/) - Tortoise ORM is an easy-to-use asyncio ORM (Object Relational Mapper) inspired by Django.
+- [Beanie ODM](https://beanie-odm.dev/) - Beanie - is an asynchronous Python object-document mapper (ODM) for MongoDB.
 - [fastapi-and-logging](https://github.com/heysaeid/fastapi-and-logging) - FastAPI-and-Logging simplifies log handling, allowing for effective organization, tracking, and analysis of logs in FastAPI applications, aiding in debugging and issue resolution.
 - [fastapi-and-caching](https://github.com/heysaeid/fastapi-and-caching) - FastAPI and Caching is an extension for FastAPI that provides support for various caching mechanisms, allowing you to easily leverage caching within your FastAPI applications.
 - [fastapi-and-babel](https://github.com/heysaeid/fastapi-and-babel.git) - FastAPIAndBabel allows you to easily use babel in your FastAPI projects and offers some features to improve and ease things.
@@ -27,7 +30,7 @@ By executing the following command, you initiate the project configuration.
 fast init
 -- Enter the name of the application (default: Fast Template): FastTemplate
 -- Enter the config module type (default: multiple): single or multiple
--- Enter the ORM (default: sqlalchemy): sqlalchemy or tortoise
+-- Enter the ORM/ODM (default: sqlalchemy): sqlalchemy, tortoise or beanie
 Initializing has been done successfully.
 ```
 🥳🥳, your project has been created!
@@ -168,6 +171,7 @@ fast doc
         👉 FastAPI                            https://fastapi.tiangolo.com
         👉 SQLAlchemy                         https://www.sqlalchemy.org
         👉 Tortoise ORM                       https://tortoise.github.io
+        👉 Beanie ODM                         https://beanie-odm.dev
         👉 FastAPI-And-Babel                  https://github.com/heysaeid/fastapi-and-babel
         👉 FastAPI-And-Logging                https://github.com/heysaeid/fastapi-and-logging
         👉 FastAPI-And-Caching                https://github.com/heysaeid/fastapi-and-caching
