@@ -4,6 +4,7 @@ from pathlib import Path
 
 from fastapi_fast_template.utils.enums import (
     ConfigTypeEnum,
+    DependencyEnum,
     LoggingTypeEnum,
     ODMEnum,
     ORMEnum,
@@ -46,6 +47,14 @@ class BaseContent:
             return file_content.format(**content_data)
 
         return file_content
+
+    def install_dependencies(self, name: str):
+        dependencies = {
+            DependencyEnum.SQLALCHEMY: "pip install sqlalchemy[asyncio]",
+            DependencyEnum.TORTOISE: "pip install tortoise-orm[asyncpg]",
+            DependencyEnum.BEANIE: "pip install beanie",
+        }
+        os.system(dependencies.get(name, ""))
 
 
 class RootContent(BaseContent):
@@ -119,9 +128,8 @@ class SrcContent(BaseContent):
             ORMEnum.TORTOISE: "orm/tortoise.py",
             ODMEnum.BEANIE: "odm/beanie.py",
         }
-        return self.get_file_content(
-            config_types[self.orm_odm],
-        )
+        self.install_dependencies(self.orm_odm)
+        return self.get_file_content(config_types[self.orm_odm])
 
     def get_repository(self) -> str:
         repository = {

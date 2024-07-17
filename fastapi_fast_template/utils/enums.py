@@ -27,6 +27,12 @@ class ORMEnum(EnumMixin, StrEnum):
     TORTOISE = "tortoise"
 
 
+class DependencyEnum(EnumMixin, StrEnum):
+    SQLALCHEMY = "sqlalchemy"
+    TORTOISE = "tortoise"
+    BEANIE = "beanie"
+
+
 class ODMEnum(EnumMixin, StrEnum):
     BEANIE = "beanie"
 

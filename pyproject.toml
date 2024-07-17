@@ -45,7 +45,6 @@ dependencies = [
     "pydantic",
     "python-dotenv",
     "pydantic-settings",
-    "sqlalchemy[asyncio]",
     "asyncpg",
     "ruff",
     "pre-commit",
