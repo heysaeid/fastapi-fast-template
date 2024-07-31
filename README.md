@@ -1,4 +1,9 @@
 # FastAPI Fast Template
+[![Package version](https://img.shields.io/pypi/v/fastapi-fast-template?color=%2334D058&label=pypi%20package)](https://pypi.org/project/fastapi-fast-template/)
+[![Downloads](https://img.shields.io/pypi/dm/fastapi-fast-template)](https://pypi.org/project/fastapi-fast-template/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/fastapi-fast-template.svg?color=%2334D058)](https://pypi.org/project/fastapi-fast-template/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/heysaeid/fastapi-fast-template/blob/master/LICENSE)
+
 This library helps you not get involved in the complexities of FastAPI and its libraries and focus all your attention on the application.
 
 
@@ -19,7 +24,7 @@ This library helps you not get involved in the complexities of FastAPI and its l
 
 ## Install
 ```
-pip install git+https://github.com/heysaeid/fastapi-fast-template.git
+pip install fastapi-fast-template
 ```
 
 
