@@ -1,16 +1,14 @@
-[build-system]
-requires = ["hatchling >= 1.13.0"]
-build-backend = "hatchling.build"
-
-[project]
-name = "fastapi_fast_template"
+[tool.poetry]
+name = "fastapi-fast-template"
+version = "0.0.2"
 description = "This library helps you not get involved in the complexities of FastAPI and its libraries and focus all your attention on the application."
-readme = "README.md"
-requires-python = ">=3.8"
+authors = ["Saeid Noormohammadi <heysaeid92@gmail.com>"]
 license = "MIT"
-authors = [
-    { name = "Saeid Noormohammadi", email = "heysaeid92@gmail.com" },
-]
+readme = "README.md"
+homepage = "https://github.com/heysaeid/fastapi-fast-template"
+repository = "https://github.com/heysaeid/fastapi-fast-template"
+documentation = "https://github.com/heysaeid/fastapi-fast-template"
+keywords = ["fastapi", "fastapi template", "fastapi fast template", "fastapi boilerplate"]
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -39,46 +37,21 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = [
-    "fastapi",
-    "uvicorn",
-    "pydantic",
-    "python-dotenv",
-    "pydantic-settings",
-    "asyncpg",
-    "ruff",
-    "pre-commit",
-    "termcolor",
-    "StrEnum",
-]
-dynamic = ["version"]
-
-[project.urls]
-Homepage = "https://github.com/heysaeid/fastapi-fast-template"
-Documentation = "https://github.com/heysaeid/fastapi-fast-template"
-Repository = "https://github.com/heysaeid/fastapi-fast-template"
-
-[tool.hatch.version]
-path = "fastapi_fast_template/__init__.py"
-
-[tool.mypy]
-strict = true
-
-[tool.pytest.ini_options]
-addopts = [
-    "--strict-config",
-    "--strict-markers",
-    "--ignore=docs_src",
-]
-xfail_strict = true
-junit_family = "xunit2"
-
-[tool.coverage.run]
-parallel = true
 
 
-[project.scripts]
-fast = "fastapi_fast_template.cli:Cli.main"
+[tool.poetry.dependencies]
+python = "^3.7"
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
+python-dotenv = "*"
+pydantic-settings = "*"
+asyncpg = "*"
+ruff = "*"
+pre-commit = "*"
+termcolor = "*"
+StrEnum = "*"
+
 
 [tool.ruff]
 line-length = 79
@@ -96,8 +69,13 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "W191",  # indentation contains tabs
     "F821",  # Undefined name
-    "E402",  # Module level import not at top of file
 ]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
 [tool.ruff.pyupgrade]
 # Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
