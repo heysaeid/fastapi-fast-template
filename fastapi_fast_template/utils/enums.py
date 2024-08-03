@@ -25,11 +25,13 @@ class ConfigTypeEnum(EnumMixin, StrEnum):
 class ORMEnum(EnumMixin, StrEnum):
     SQLALCHEMY = "sqlalchemy"
     TORTOISE = "tortoise"
+    SQLMODEL = "sqlmodel"
 
 
 class DependencyEnum(EnumMixin, StrEnum):
     SQLALCHEMY = "sqlalchemy"
     TORTOISE = "tortoise"
+    SQLMODEL = "sqlmodel"
     BEANIE = "beanie"
 
 

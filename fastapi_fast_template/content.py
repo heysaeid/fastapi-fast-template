@@ -52,6 +52,7 @@ class BaseContent:
         dependencies = {
             DependencyEnum.SQLALCHEMY: "pip install sqlalchemy[asyncio]",
             DependencyEnum.TORTOISE: "pip install tortoise-orm[asyncpg]",
+            DependencyEnum.SQLMODEL: "pip install sqlmodel",
             DependencyEnum.BEANIE: "pip install beanie",
         }
         os.system(dependencies.get(name, ""))
@@ -77,7 +78,8 @@ orm_odm={self.orm_odm}"""
     def get_db_env_sample(self, orm_odm: ORMEnum | ODMEnum) -> str:
         config = {
             ORMEnum.SQLALCHEMY: "\nSQLALCHEMY_DB_URL=",
-            ORMEnum.TORTOISE: "\nTORTOISE_CONFIG_FILE=",
+            ORMEnum.TORTOISE: "\nTORTOISE_DB_URL=",
+            ORMEnum.SQLMODEL: "\nSQLMODEL_DB_URL=",
             ODMEnum.BEANIE: "\nBEANIE_DB_URL=",
         }
         return config[orm_odm]
@@ -108,6 +110,7 @@ class SrcContent(BaseContent):
         config = {
             ORMEnum.SQLALCHEMY: 'sqlalchemy_db_url: str = "postgresql+asyncpg://postgres:1234@localhost:5432/testdb"',
             ORMEnum.TORTOISE: 'tortoise_db_url: str = "postgres://postgres:1234@localhost:5432/testdb"',
+            ORMEnum.SQLMODEL: 'sqlmodel_db_url: str = "postgres://postgres:1234@localhost:5432/testdb"',
             ODMEnum.BEANIE: 'mongo_connection: MongoDsn = "mongodb://localhost:27017/fast"',
         }
         return config[orm_odm]
@@ -126,6 +129,7 @@ class SrcContent(BaseContent):
         config_types = {
             ORMEnum.SQLALCHEMY: "orm/sqlalchemy.py",
             ORMEnum.TORTOISE: "orm/tortoise.py",
+            ORMEnum.SQLMODEL: "orm/sqlmodel.py",
             ODMEnum.BEANIE: "odm/beanie.py",
         }
         self.install_dependencies(self.orm_odm)
@@ -135,6 +139,7 @@ class SrcContent(BaseContent):
         repository = {
             ORMEnum.SQLALCHEMY: "repositories/sqlalchemy/base.py",
             ORMEnum.TORTOISE: "repositories/tortoise/base.py",
+            ORMEnum.SQLMODEL: "repositories/sqlmodel/base.py",
             ODMEnum.BEANIE: "repositories/beanie/base.py",
         }
         return self.get_file_content(
@@ -150,6 +155,9 @@ class SrcContent(BaseContent):
             start_application_content = "await init_db()"
             down_application_content = "await close_db()"
             import_content += "from database import init_db, close_db"
+        elif self.orm_odm == ORMEnum.SQLMODEL:
+            start_application_content = "create_db_and_tables()"
+            import_content += "from database import create_db_and_tables"
 
         return self.get_file_content(
             "utils/lifespan.py",

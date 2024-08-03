@@ -13,7 +13,7 @@ This library helps you not get involved in the complexities of FastAPI and its l
 - [pre-commit](https://pre-commit.com/) - A framework for managing and maintaining multi-language pre-commit hooks.
 - [SQLAlchemy](https://sqlalchemy.org/) - SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL
 - [Tortoise ORM](https://tortoise.github.io/) - Tortoise ORM is an easy-to-use asyncio ORM (Object Relational Mapper) inspired by Django.
-- [SQLModel ORM(<b style="color:green">Coming Soon...</b>)](https://sqlmodel.tiangolo.com/) - SQLModel, SQL databases in Python, designed for simplicity, compatibility, and robustness.
+- [SQLModel ORM](https://sqlmodel.tiangolo.com/) - SQLModel, SQL databases in Python, designed for simplicity, compatibility, and robustness.
 - [Beanie ODM](https://beanie-odm.dev/) - Beanie - is an asynchronous Python object-document mapper (ODM) for MongoDB.
 - [fastapi-and-logging](https://github.com/heysaeid/fastapi-and-logging) - FastAPI-and-Logging simplifies log handling, allowing for effective organization, tracking, and analysis of logs in FastAPI applications, aiding in debugging and issue resolution.
 
