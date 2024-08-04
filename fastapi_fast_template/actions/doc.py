@@ -32,6 +32,9 @@ class DocAction(ActionABC):
             f"\t👉 Tortoise ORM                       {self.get_url('https://tortoise.github.io')}"
         )
         print(
+            f"\t👉 SQLModel ORM                       {self.get_url('https://sqlmodel.tiangolo.com/')}"
+        )
+        print(
             f"\t👉 Beanie ODM                         {self.get_url('https://beanie-odm.dev')}"
         )
         print(
