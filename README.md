@@ -42,7 +42,7 @@ By executing the following command, you initiate the project configuration.
 fast init
 -- Enter the name of the application (default: Fast Template): FastTemplate
 -- Enter the config module type (default: multiple): single or multiple
--- Enter the ORM/ODM (default: sqlalchemy): sqlalchemy, tortoise or beanie
+-- Enter the ORM/ODM (default: sqlalchemy): sqlalchemy, tortoise, sqlmodel or beanie
 Initializing has been done successfully.
 ```
 🥳🥳, your project has been created!
