@@ -183,6 +183,7 @@ fast doc
         👉 FastAPI                            https://fastapi.tiangolo.com
         👉 SQLAlchemy                         https://www.sqlalchemy.org
         👉 Tortoise ORM                       https://tortoise.github.io
+        👉 SQLModel ORM                       https://sqlmodel.tiangolo.com
         👉 Beanie ODM                         https://beanie-odm.dev
         👉 FastAPI-And-Babel                  https://github.com/heysaeid/fastapi-and-babel
         👉 FastAPI-And-Logging                https://github.com/heysaeid/fastapi-and-logging
