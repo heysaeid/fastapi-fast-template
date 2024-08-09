@@ -22,7 +22,6 @@ This library helps you not get involved in the complexities of FastAPI and its l
 - [APScheduler](https://apscheduler.readthedocs.io/en/3.x/) Advanced Python Scheduler (APScheduler) is a Python library that lets you schedule your Python code to be executed later, either just once or periodically.
 - [FastStream](https://faststream.airt.ai/latest/) - the simplest way to work with a messaging queues
 - [Authx(<b style="color:green">Coming Soon...</b>)](https://github.com/yezz123/AuthX)
-- [FastAPI-Azure-Auth(<b style="color:green">Coming Soon...</b>)](https://github.com/Intility/fastapi-azure-auth)
 - [FastAPI Cloud Auth(<b style="color:green">Coming Soon...</b>)](https://github.com/tokusumi/fastapi-cloudauth)
 - [FastAPI Admin(<b style="color:green">Coming Soon...</b>)](https://github.com/fastapi-admin/fastapi-admin)
 - [FastAPI MVC(<b style="color:green">Coming Soon...</b>)](https://github.com/fastapi-mvc/fastapi-mvc)
