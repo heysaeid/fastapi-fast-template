@@ -5,6 +5,7 @@ from fastapi_fast_template.actions.base import ActionABC, ActionParserABC
 from fastapi_fast_template.content import ExtensionContent
 from fastapi_fast_template.utils.enums import (
     ArgumentDefaultValueEnum,
+    AuthEnum,
     CachingBackendEnum,
     DirectoryEnum,
     ExtensionNameEnum,
@@ -34,6 +35,8 @@ class ExtensionAction(ActionABC):
             self.logging(args)
         elif args.name == ExtensionNameEnum.STREAM:
             self.stream(args)
+        elif args.name == ExtensionNameEnum.AUTH:
+            self.auth(args)
 
     def babel(self, args: ArgumentParser) -> None:
         os.system("pip install fastapi-and-babel")
@@ -209,6 +212,26 @@ class ExtensionAction(ActionABC):
             new_line=ext_content.get_stream_in_lifespan(),
         )
 
+    def auth(self, args: ArgumentParser):
+        os.system("pip install authx")
+        if check_extension_exists(ExtensionNameEnum.AUTH):
+            print(f"You have already added the {args.auth}")
+            return
+        ext_content = ExtensionContent(args)
+        FileBuilder(
+            file=FileEnum.SRC_UTILS_AUTHX,
+            build_function=ext_content.get_scheduler_init,
+        ).build()
+        add_line_to_last_import(
+            FileEnum.FileEnum.SRC_APP,
+            new_line=ext_content.get_authx_import_in_app(),
+        )
+        add_new_line(
+            file_path=FileEnum.SRC_APP,
+            search_value="return",
+            new_line=ext_content.get_authx_in_app(),
+        )
+
 
 class ExtensionActionParser(ActionParserABC):
     def parser(self):
@@ -248,6 +271,12 @@ class ExtensionActionParser(ActionParserABC):
             default=ArgumentDefaultValueEnum.STREAM_BROKER,
             help="Broker Name",
         )
+        sub_parser.add_argument(
+            "-ath",
+            "--auth",
+            default=ArgumentDefaultValueEnum.AUTH,
+            help="Auth-Ext Name",
+        )
 
     def get_user_input(self, args):
         if args.name == ExtensionNameEnum.BABEL:
@@ -272,4 +301,10 @@ class ExtensionActionParser(ActionParserABC):
                 default_value=args.broker,
                 message=f"Please select the broker (default: {ArgumentDefaultValueEnum.STREAM_BROKER}): ",
                 choices=StreamBrokerEnum.get_values(),
+            )
+        elif args.name == ExtensionNameEnum.AUTH:
+            args.auth = self._get_input(
+                default_value=args.auth,
+                message=f"Please select the auth ext (default: {ArgumentDefaultValueEnum.AUTH}): ",
+                choices=AuthEnum.get_values(),
             )

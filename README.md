@@ -21,7 +21,7 @@ This library helps you not get involved in the complexities of FastAPI and its l
 - [fastapi-and-babel](https://github.com/heysaeid/fastapi-and-babel.git) - FastAPIAndBabel allows you to easily use babel in your FastAPI projects and offers some features to improve and ease things.
 - [APScheduler](https://apscheduler.readthedocs.io/en/3.x/) Advanced Python Scheduler (APScheduler) is a Python library that lets you schedule your Python code to be executed later, either just once or periodically.
 - [FastStream](https://faststream.airt.ai/latest/) - the simplest way to work with a messaging queues
-- [Authx(<b style="color:green">Coming Soon...</b>)](https://github.com/yezz123/AuthX)
+- [Authx](https://github.com/yezz123/AuthX) - Ready-to-use and customizable Authentications and Oauth2 management for FastAPI ⚡
 - [FastAPI Cloud Auth(<b style="color:green">Coming Soon...</b>)](https://github.com/tokusumi/fastapi-cloudauth)
 - [FastAPI Admin(<b style="color:green">Coming Soon...</b>)](https://github.com/fastapi-admin/fastapi-admin)
 - [FastAPI MVC(<b style="color:green">Coming Soon...</b>)](https://github.com/fastapi-mvc/fastapi-mvc)
@@ -189,6 +189,7 @@ fast doc
         👉 FastAPI-And-Caching                https://github.com/heysaeid/fastapi-and-caching
         👉 APScheduler                        https://fastapi.tiangolo.com
         👉 FastStream                         https://faststream.airt.ai
+        👉 AuthX                              https://github.com/yezz123/authx
         And ...
         ___________________________________
 

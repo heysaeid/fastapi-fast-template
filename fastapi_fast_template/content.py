@@ -287,3 +287,15 @@ class ExtensionContent(BaseContent):
 
     def get_stream_in_lifespan(self) -> str:
         return "\n\n" + self.get_file_content("utils/stream_lifespan.py")
+
+    def get_authx_in_fast_template_init(self) -> str:
+        return "auth=True"
+
+    def get_authx(self) -> str:
+        return self.get_file_content("utils/authx.py")
+
+    def get_authx_in_app(self) -> str:
+        return "from utils.auth import auth"
+
+    def get_authx_import_in_app(self) -> str:
+        return "auth.handle_errors(app)"

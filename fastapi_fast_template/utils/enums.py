@@ -57,6 +57,10 @@ class StreamBrokerEnum(EnumMixin, StrEnum):
     NATS = "nats"
 
 
+class AuthEnum(EnumMixin, StrEnum):
+    AUTHX = "auth"
+
+
 class ArgumentDefaultValueEnum(StrEnum):
     APP_NAME = "Fast Template"
     CONFIG_TYPE = ConfigTypeEnum.MULTIPLE
@@ -64,6 +68,7 @@ class ArgumentDefaultValueEnum(StrEnum):
     REDIS_BACKEND = CachingBackendEnum.REDIS
     LOGGING_TYPE = LoggingTypeEnum.INCOMING
     STREAM_BROKER = StreamBrokerEnum.REDIS
+    AUTH = AuthEnum.AUTHX
 
 
 class DirectoryEnum(StrEnum):
@@ -98,6 +103,7 @@ class FileEnum(StrEnum):
     SRC_ROUTERS_INIT_ = "src/routers/__init__.py"
     SRC_UTILS_LIFESPAN = "src/utils/lifespan.py"
     SRC_UTILS_CACHING = "src/utils/caching.py"
+    SRC_UTILS_AUTHX = "src/utils/auth.py"
     SRC_TASKS_INIT_ = "src/tasks/__init__.py"
 
     LAST_RUN_SCHEDULER = ".last_run_scheduler.txt"
@@ -114,3 +120,4 @@ class ExtensionNameEnum(StrEnum):
     CACHING = "caching"
     LOGGING = "logging"
     STREAM = "stream"
+    AUTH = "auth"
