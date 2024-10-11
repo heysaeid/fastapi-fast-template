@@ -154,7 +154,7 @@ class BaseRepository(Generic[ModelType]):
     async def create(
         self,
         entity: ModelType = None,
-        commit: bool = False,
+        commit: bool = True,
         **kwargs,
     ) -> ModelType:
         """
@@ -193,7 +193,7 @@ class BaseRepository(Generic[ModelType]):
     async def update(
         self,
         entity: ModelType,
-        commit: bool = False,
+        commit: bool = True,
         **kwargs,
     ) -> ModelType:
         """
