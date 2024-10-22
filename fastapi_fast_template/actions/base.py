@@ -41,6 +41,6 @@ class ActionParserABC(ABC):
                 print(
                     f"Invalid choice: {input_value} (choose from {', '.join(choices)})"
                 )
-                self._get_input(default_value, message, choices)
+                input_value = self._get_input(default_value, message, choices)
             return input_value
         return default_value

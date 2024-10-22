@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastapi-fast-template"
-version = "0.0.5"
+version = "0.0.7"
 description = "This library helps you not get involved in the complexities of FastAPI and its libraries and focus all your attention on the application."
 authors = ["Saeid Noormohammadi <heysaeid92@gmail.com>"]
 license = "MIT"
