@@ -24,7 +24,6 @@ This library helps you not get involved in the complexities of FastAPI and its l
 - [Authx](https://github.com/yezz123/AuthX) - Ready-to-use and customizable Authentications and Oauth2 management for FastAPI ⚡
 - [FastAPI Cloud Auth(<b style="color:green">Coming Soon...</b>)](https://github.com/tokusumi/fastapi-cloudauth)
 - [FastAPI Admin(<b style="color:green">Coming Soon...</b>)](https://github.com/fastapi-admin/fastapi-admin)
-- [FastAPI MVC(<b style="color:green">Coming Soon...</b>)](https://github.com/fastapi-mvc/fastapi-mvc)
 - [Fastapi-mail(<b style="color:green">Coming Soon...</b>)](https://github.com/sabuhish/fastapi-mail)
 
 
