@@ -39,7 +39,7 @@ By executing the following command, you initiate the project configuration.
 ```shell
 fast init
 -- Enter the name of the application (default: Fast Template): FastTemplate
--- Enter the config module type (default: multiple): single or multiple
+-- Enter the config module type (default: multiple): simple or multiple
 -- Enter the ORM/ODM (default: sqlalchemy): sqlalchemy, tortoise, sqlmodel or beanie
 Initializing has been done successfully.
 ```
